@@ -128,7 +128,8 @@ def get_clicked_point(image_path):
     min_ratio, max_ratio = min(all_ratios), max(all_ratios)
     min_center, max_center = min(all_centers), max(all_centers)
     for label, objs in objects.items():
-        if len(objs) < 2:
+        label_name = label_mapping[label]
+        if len(objs) < 2 or label_name=='person':
             tag = False
             label_name = None
             continue  # 如果目标数少于 2，跳过此标签
