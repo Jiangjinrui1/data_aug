@@ -1,5 +1,6 @@
 import torch
 import sys
+import os
 import numpy as np
 from pathlib import Path
 from matplotlib import pyplot as plt
@@ -25,10 +26,11 @@ def setup_args():
     class Args:
         def __init__(self):
             # self.input_img = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\000a91a4-7612-5842-9704-55c95894ce92.jpg"  # replace with your input image
-            self.input_img = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\0ce97a65-feb3-52ce-b4e1-dac18cb90a9f.jpg"
+            # self.input_img = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\0ce97a65-feb3-52ce-b4e1-dac18cb90a9f.jpg"
+            # self.input_img = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\1f993990-0666-5f54-9de8-957abfcb93d7.jpg"
+            self.input_folder = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total"
+            self.output_dir = "./results"
             self.coords_type = "key_in"
-            self.point_coords_1 = [750, 500]
-            self.point_coords_2 = [1000, 500]
             self.point_labels = [1]
             self.dilate_kernel_size = 15
             self.output_dir = "./results"
@@ -75,11 +77,11 @@ def generate_ring_mask(image, new_bbox, original_bbox, ring_thickness=10):
 
     return mask
 
-def get_clicked_point(image_path):
+def get_clicked_points(image_path):
     image = cv2.imread(image_path)
     if image is None:
         print("Image not found:", image_path)
-        return
+        return None, None, None, None, None, None
 
     # 推理检测
     results = model_yolo(image)
@@ -129,7 +131,7 @@ def get_clicked_point(image_path):
     min_center, max_center = min(all_centers), max(all_centers)
     for label, objs in objects.items():
         label_name = label_mapping[label]
-        if len(objs) < 2 or label_name=='person':
+        if len(objs) < 2 or label_name != 'person':
             tag = False
             label_name = None
             continue  # 如果目标数少于 2，跳过此标签
@@ -163,6 +165,7 @@ def get_clicked_point(image_path):
             obj1_left_top = (obj1['bbox'][0], obj1['bbox'][1])
             obj2_left_top = (obj2['bbox'][0], obj2['bbox'][1])
             return obj1['center'], obj2['center'], obj1['bbox'], obj2['bbox'],obj1_left_top,obj2_left_top
+    return None, None, None, None, None, None
 def remove_single_obj(img, coords, bbox, args):
     latest_coords = coords
     if type(img) != np.ndarray:
@@ -210,38 +213,72 @@ def remove_and_swap(img, coords1, coords2, bbox1,bbox2,position1,position2,args)
     res.show()
     obj1 = Image.fromarray(obj1)
     obj2 = Image.fromarray(obj2)
-        # 计算新的位置并检查是否重叠
     new_position1 = bbox2  
-    new_position2 = bbox1  # 将第二个目标粘贴到第一个目标的位置
-        # 计算目标的偏移量
+    new_position2 = bbox1  
+    # 计算目标的偏移量
     # 偏移量 = 目标中心对齐后的左上角坐标 - 目标原始左上角坐标
     offset_x1 = coords2[0] - coords1[0]
     offset_y1 = coords2[1] - coords1[1]
-    
     offset_x2 = coords1[0] - coords2[0]
     offset_y2 = coords1[1] - coords2[1]
-    
-    # 将 obj1 粘贴到 obj2 的中心位置
     new_position1 = (position1[0] + offset_x1, position1[1] + offset_y1)
-    
-    # 将 obj2 粘贴到 obj1 的中心位置
     new_position2 = (position2[0] + offset_x2, position2[1] + offset_y2)
-
     res.paste(obj1, new_position1, obj1)
     res.paste(obj2, new_position2, obj2)
-    res.save("final.png")
+    # res.save("final.png")
+    return res
 
 def refinement(img,bbox1,bbox2,args):
     ...
 
+def swap_in_folder(input_folder, output_folder):
+    """
+    批量交换文件夹中的目标（如人类对象）位置，并保存修改后的图像。
+    
+    input_folder: 输入文件夹路径，包含待处理的图像文件
+    output_folder: 输出文件夹路径，保存修改后的图像
+    """
+    # 创建输出文件夹（如果不存在）
+    output_folder = Path(output_folder)
+    output_folder.mkdir(parents=True, exist_ok=True)
+
+    # 获取输入文件夹中的所有图像文件
+    image_files = [f for f in os.listdir(input_folder) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
+
+    # 遍历所有图像文件
+    for image_file in image_files:
+        image_path = os.path.join(input_folder, image_file)
+        
+        # 获取目标对象的位置
+        try:
+            obj1_center, obj2_center, obj1_bbox, obj2_bbox,pos_1,pos_2 = get_clicked_points(image_path)
+        except Exception as e:
+            print(f"Error processing {image_file}: {e}")
+            continue
+
+        # 读取图像
+        image = cv2.imread(image_path)
+        
+        if image is None:
+            print(f"Failed to read image {image_file}")
+            continue
+        
+        # 交换目标位置（通过粘贴的方式）
+        swapped_image = remove_and_swap(image, obj1_center, obj2_center, obj1_bbox, obj2_bbox,pos_1,pos_2, args)
+        
+        # 保存修改后的图像
+        output_image_path = output_folder / image_file
+        swapped_image.save(output_image_path)
+
+        print(f"Processed {image_file} and saved to {output_image_path}")
 
 
 if __name__ == "__main__":
     args = setup_args()
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    coords1,coords2,bbox1,bbox2,point1,point2 = get_clicked_point(args.input_img)
-
-    remove_and_swap(args.input_img, coords1,coords2, bbox1,bbox2,point1,point2, args)
+    # coords1,coords2,bbox1,bbox2,point1,point2 = get_clicked_points(args.input_img)
+    # remove_and_swap(args.input_img, coords1,coords2, bbox1,bbox2,point1,point2, args)
+    swap_in_folder(args.input_folder, args.output_dir)
 
     # if args.coords_type == "click":
     #     latest_coords = get_clicked_point(args.input_img)
