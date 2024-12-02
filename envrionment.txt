@@ -1,0 +1,11 @@
+opencv-python
+ultralytics
+segment_anything
+omegaconf
+easydict
+scikit-learn
+scikit-image
+pytorch_lightning
+albumentations==0.5.2
+webdataset
+kornia==0.5.0

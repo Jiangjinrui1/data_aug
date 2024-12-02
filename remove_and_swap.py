@@ -17,27 +17,26 @@ from PIL import Image
 from ultralytics import YOLO
 
 # 加载 YOLOv5 模型
-model_yolo = YOLO('yolov5lu.pt')
-sam_checkpoint = r"D:\Google_Browser_download\sam_vit_h_4b8939.pth" # 替换为您的权重文件路径
+model_yolo = YOLO('/root/autodl-tmp/yolov5lu.pt')
+sam_checkpoint = "/root/autodl-tmp/sam_vit_h_4b8939.pth" # 替换为您的权重文件路径
+lama_ckpt = "/root/autodl-tmp/big-lama"
 
 
 def setup_args():
-    # Instead of using argparse, we manually define args for testing
     class Args:
         def __init__(self):
             # self.input_img = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\000a91a4-7612-5842-9704-55c95894ce92.jpg"  # replace with your input image
             # self.input_img = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\0ce97a65-feb3-52ce-b4e1-dac18cb90a9f.jpg"
             # self.input_img = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\1f993990-0666-5f54-9de8-957abfcb93d7.jpg"
-            self.input_folder = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total"
-            self.output_dir = "./results"
+            self.input_folder = "/autodl-fs/data/data/data/MORE/img_org/total"
+            self.output_dir = "/root/autodl-fs/swap_res"
             self.coords_type = "key_in"
             self.point_labels = [1]
             self.dilate_kernel_size = 15
-            self.output_dir = "./results"
             self.sam_model_type = "vit_h"
-            self.sam_ckpt = "./pretrained_models/sam_vit_h_4b8939.pth"  # replace with actual path
+            self.sam_ckpt = sam_checkpoint  # replace with actual path
             self.lama_config = "./lama/configs/prediction/default.yaml"
-            self.lama_ckpt = "./pretrained_models/big-lama"  # replace with actual path
+            self.lama_ckpt = lama_ckpt  # replace with actual path
 
     return Args()
 def normalize(value, min_value, max_value):
@@ -197,9 +196,6 @@ def remove_single_obj(img, coords, bbox, args):
 
 
 
-        # 裁剪目标区域
-    # img_inpainted = cv2.cvtColor(img_inpainted, cv2.COLOR_RGB2BGR)
-    # cv2.imwrite("removed.png", img_inpainted)
     return img_inpainted,crop_rgba_image
 def remove_and_swap(img, coords1, coords2, bbox1,bbox2,position1,position2,args):
     tmp,obj1 = remove_single_obj(img, coords1, bbox1, args)
@@ -210,7 +206,6 @@ def remove_and_swap(img, coords1, coords2, bbox1,bbox2,position1,position2,args)
     # res = cv2.cvtColor(res, cv2.COLOR_RGB2BGR)
     cv2.imwrite("removed.png", res)
     res = Image.fromarray(res,mode='RGB')
-    res.show()
     obj1 = Image.fromarray(obj1)
     obj2 = Image.fromarray(obj2)
     new_position1 = bbox2  
@@ -225,7 +220,13 @@ def remove_and_swap(img, coords1, coords2, bbox1,bbox2,position1,position2,args)
     new_position2 = (position2[0] + offset_x2, position2[1] + offset_y2)
     res.paste(obj1, new_position1, obj1)
     res.paste(obj2, new_position2, obj2)
-    # res.save("final.png")
+    # 将PIL图像转换为numpy数组 (RGB)
+    image_rgb = np.array(res)
+
+    # 将RGB转换为BGR
+    image_bgr = image_rgb[..., ::-1]
+    res = Image.fromarray(image_bgr)
+    res.save("final.png")
     return res
 
 def refinement(img,bbox1,bbox2,args):
@@ -255,7 +256,9 @@ def swap_in_folder(input_folder, output_folder):
         except Exception as e:
             print(f"Error processing {image_file}: {e}")
             continue
-
+        if obj1_center is None:
+            print("No Changes,skip...")
+            continue
         # 读取图像
         image = cv2.imread(image_path)
         
