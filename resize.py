@@ -13,7 +13,7 @@ from pathlib import Path
 
 logging.basicConfig(level=logging.INFO, 
                     format="%(levelname)s: %(message)s",
-                    filename="resize.log",
+                    filename="./log/resize.log",
                     filemode="w"
                     )
 
@@ -34,7 +34,7 @@ def set_args(input_img = None,input_folder = None):
             self.input_img = input_img
             self.input_folder = input_folder
             self.output_folder = "/root/autodl-fs/resize_res"
-            self.dilate_kernel_size = 5
+            self.dilate_kernel_size = 3
             self.point_labels = [1]
             self.sam_ckpt = sam_checkpoint
             self.sam_model_type = "vit_h"
@@ -96,7 +96,7 @@ def resize_and_mask_object(img, box, coords_bg,scale_factor, args):
 
     return rgba_object, resized_object_mask
 def resize_img(img,args):
-
+    url = img
     Processed = False
     label_processed = set()
     # Load the image
@@ -110,9 +110,10 @@ def resize_img(img,args):
     results = model(img)
     for result in results:
         for box in result.boxes:
+            conf = box.conf[0]
             label = box.cls.cpu().numpy()
             label_name = label_mapping[int(label)]
-            if label_name == "person":
+            if label_name == "person" or label_name == "tie" or conf <= 0.85:
                 continue
             if label_name in label_processed:
                 continue
@@ -160,7 +161,7 @@ def resize_img(img,args):
             img = np.array(bg)
     cv2.imwrite("./resize_tmp/resized_img.jpg",img)
     if Processed == False:
-        logging.warning(f"Object {label_name} not processed")
+        logging.warning(f"image {url} not processed")
         return None
     return img
 
@@ -173,6 +174,10 @@ def process_in_folder(args):
     count = 0
     for image_file in image_files:
         logging.info(f"Processing {image_file}")
+        output_image_path = output_folder / image_file
+        if output_image_path.exists():
+            logging.info(f"{output_image_path}has already exists,skip...")
+            continue
         image_path = os.path.join(input_folder, image_file)
         res = resize_img(image_path,args)
         if res is None:

@@ -1,0 +1,2512 @@
+INFO: Make training model default
+INFO: BaseInpaintingTrainingModule init called
+INFO: Make generator ffc_resnet
+INFO: Generator
+FFCResNetGenerator(
+  (model): Sequential(
+    (0): ReflectionPad2d((3, 3, 3, 3))
+    (1): FFC_BN_ACT(
+      (ffc): FFC(
+        (convl2l): Conv2d(4, 64, kernel_size=(7, 7), stride=(1, 1), bias=False, padding_mode=reflect)
+        (convl2g): Identity()
+        (convg2l): Identity()
+        (convg2g): Identity()
+        (gate): Identity()
+      )
+      (bn_l): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn_g): Identity()
+      (act_l): ReLU(inplace=True)
+      (act_g): Identity()
+    )
+    (2): FFC_BN_ACT(
+      (ffc): FFC(
+        (convl2l): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False, padding_mode=reflect)
+        (convl2g): Identity()
+        (convg2l): Identity()
+        (convg2g): Identity()
+        (gate): Identity()
+      )
+      (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn_g): Identity()
+      (act_l): ReLU(inplace=True)
+      (act_g): Identity()
+    )
+    (3): FFC_BN_ACT(
+      (ffc): FFC(
+        (convl2l): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False, padding_mode=reflect)
+        (convl2g): Identity()
+        (convg2l): Identity()
+        (convg2g): Identity()
+        (gate): Identity()
+      )
+      (bn_l): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn_g): Identity()
+      (act_l): ReLU(inplace=True)
+      (act_g): Identity()
+    )
+    (4): FFC_BN_ACT(
+      (ffc): FFC(
+        (convl2l): Conv2d(256, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False, padding_mode=reflect)
+        (convl2g): Conv2d(256, 384, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False, padding_mode=reflect)
+        (convg2l): Identity()
+        (convg2g): Identity()
+        (gate): Identity()
+      )
+      (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act_l): ReLU(inplace=True)
+      (act_g): ReLU(inplace=True)
+    )
+    (5): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (6): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (7): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (8): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (9): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (10): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (11): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (12): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (13): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (14): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (15): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (16): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (17): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (18): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (19): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (20): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (21): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (22): FFCResnetBlock(
+      (conv1): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+      (conv2): FFC_BN_ACT(
+        (ffc): FFC(
+          (convl2l): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convl2g): Conv2d(128, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2l): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, padding_mode=reflect)
+          (convg2g): SpectralTransform(
+            (downsample): Identity()
+            (conv1): Sequential(
+              (0): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU(inplace=True)
+            )
+            (fu): FourierUnit(
+              (conv_layer): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (relu): ReLU(inplace=True)
+            )
+            (conv2): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          )
+          (gate): Identity()
+        )
+        (bn_l): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (bn_g): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (act_l): ReLU(inplace=True)
+        (act_g): ReLU(inplace=True)
+      )
+    )
+    (23): ConcatTupleLayer()
+    (24): ConvTranspose2d(512, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), output_padding=(1, 1))
+    (25): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (26): ReLU(inplace=True)
+    (27): ConvTranspose2d(256, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), output_padding=(1, 1))
+    (28): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (29): ReLU(inplace=True)
+    (30): ConvTranspose2d(128, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), output_padding=(1, 1))
+    (31): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (32): ReLU(inplace=True)
+    (33): ReflectionPad2d((3, 3, 3, 3))
+    (34): Conv2d(64, 3, kernel_size=(7, 7), stride=(1, 1))
+    (35): Sigmoid()
+  )
+)
+INFO: BaseInpaintingTrainingModule init done
+INFO: Processing f142b62f-889c-59dd-9c6b-86d39733dffe.jpg
+INFO: Shrink object baseball bat
+INFO: Processed 1/3559 images
+INFO: Processing c805e0eb-1e33-5e7f-aa8f-a960b9bcf2f2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c805e0eb-1e33-5e7f-aa8f-a960b9bcf2f2.jpg not processed
+INFO: Processing a5e6fbb9-19a7-5c42-b1cd-2ab2c3fe43ee.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a5e6fbb9-19a7-5c42-b1cd-2ab2c3fe43ee.jpg not processed
+INFO: Processing bb4a4f3b-8c61-534d-a464-bcac7b893a68.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bb4a4f3b-8c61-534d-a464-bcac7b893a68.jpg not processed
+INFO: Processing 829da1b0-5492-56b3-aff3-61857ce68246.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/829da1b0-5492-56b3-aff3-61857ce68246.jpg not processed
+INFO: Processing 310c15fd-556f-5380-a5cb-e41f6e92d1b8.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/310c15fd-556f-5380-a5cb-e41f6e92d1b8.jpg not processed
+INFO: Processing ee364f3a-60ec-59d6-a3cd-f6d8efecf104.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ee364f3a-60ec-59d6-a3cd-f6d8efecf104.jpg not processed
+INFO: Processing ed9ef800-1395-52c7-9118-f858d3f09610.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ed9ef800-1395-52c7-9118-f858d3f09610.jpg not processed
+INFO: Processing 3d8fa838-b437-5895-a037-6ace0062c4c1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3d8fa838-b437-5895-a037-6ace0062c4c1.jpg not processed
+INFO: Processing 9ef0d020-87f1-5da7-9658-9cb12f52afd8.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9ef0d020-87f1-5da7-9658-9cb12f52afd8.jpg not processed
+INFO: Processing 3ca01fb7-f7ea-5ab1-be35-f2980a0aa00f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3ca01fb7-f7ea-5ab1-be35-f2980a0aa00f.jpg not processed
+INFO: Processing e4cfc1f3-f1d3-57c9-92f8-5526d60ea52c.jpg
+INFO: Enlarge object baseball glove
+INFO: Processed 2/3559 images
+INFO: Processing c3cf7ffb-634e-5bdd-9eba-e4cfc2884e39.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c3cf7ffb-634e-5bdd-9eba-e4cfc2884e39.jpg not processed
+INFO: Processing 2830a399-c18e-5064-a063-f00caf3c3cba.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2830a399-c18e-5064-a063-f00caf3c3cba.jpg not processed
+INFO: Processing 5cbb34ab-4682-5df8-876c-17ed88b348d3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5cbb34ab-4682-5df8-876c-17ed88b348d3.jpg not processed
+INFO: Processing cca912bf-56a6-58cf-be5a-ea1a69e43246.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cca912bf-56a6-58cf-be5a-ea1a69e43246.jpg not processed
+INFO: Processing 2b54e827-34a0-5b7b-aff8-0cdc3160da10.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2b54e827-34a0-5b7b-aff8-0cdc3160da10.jpg not processed
+INFO: Processing 4f15e041-8062-5dc8-904f-2b2bf3b96295.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4f15e041-8062-5dc8-904f-2b2bf3b96295.jpg not processed
+INFO: Processing 5d5b4c39-57a0-573a-a4ed-c880e0632723.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5d5b4c39-57a0-573a-a4ed-c880e0632723.jpg not processed
+INFO: Processing ef2ebb47-f6c8-52ab-85ac-d34aee4fa832.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ef2ebb47-f6c8-52ab-85ac-d34aee4fa832.jpg not processed
+INFO: Processing e93bfd98-18d7-5dfd-af4a-bc7b985d0945.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e93bfd98-18d7-5dfd-af4a-bc7b985d0945.jpg not processed
+INFO: Processing cfce7596-4d09-523e-9a9d-5c9f1b421323.jpg
+INFO: Enlarge object sports ball
+INFO: Processed 3/3559 images
+INFO: Processing 9a0da1b5-7789-5ee9-8963-372dadc6356e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9a0da1b5-7789-5ee9-8963-372dadc6356e.jpg not processed
+INFO: Processing 16fa5480-c81d-51f7-8bdc-bd56bdc324ba.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/16fa5480-c81d-51f7-8bdc-bd56bdc324ba.jpg not processed
+INFO: Processing 135c37c5-f8c5-5ced-a23b-c6e0fe5e80c9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/135c37c5-f8c5-5ced-a23b-c6e0fe5e80c9.jpg not processed
+INFO: Processing 38a86309-fb6e-54e5-8b05-2b31846371c8.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/38a86309-fb6e-54e5-8b05-2b31846371c8.jpg not processed
+INFO: Processing 3d001625-0d7b-56f4-84e0-50022ac67d8c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3d001625-0d7b-56f4-84e0-50022ac67d8c.jpg not processed
+INFO: Processing 433cf99f-56f2-5597-848b-b686e49864ce.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/433cf99f-56f2-5597-848b-b686e49864ce.jpg not processed
+INFO: Processing 26d8bc3c-4d22-56e3-bd81-4d2197c779ca.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/26d8bc3c-4d22-56e3-bd81-4d2197c779ca.jpg not processed
+INFO: Processing 5a94d097-5e56-5595-82d7-dd8522dc0bf8.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5a94d097-5e56-5595-82d7-dd8522dc0bf8.jpg not processed
+INFO: Processing aac30257-64db-528f-946d-c84eabfac206.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/aac30257-64db-528f-946d-c84eabfac206.jpg not processed
+INFO: Processing 7f506943-0133-59df-8f16-d84d7383fdaa.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7f506943-0133-59df-8f16-d84d7383fdaa.jpg not processed
+INFO: Processing 1e77a44c-d212-5e2c-9a82-88e1e920ca05.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1e77a44c-d212-5e2c-9a82-88e1e920ca05.jpg not processed
+INFO: Processing fc0d7ca0-a492-57e6-9afd-78ae3c12467b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/fc0d7ca0-a492-57e6-9afd-78ae3c12467b.jpg not processed
+INFO: Processing b7d17879-d926-5edc-a258-11623f5886ad.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b7d17879-d926-5edc-a258-11623f5886ad.jpg not processed
+INFO: Processing 215c67a4-4cfa-5390-98a4-b68fec3577f5.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/215c67a4-4cfa-5390-98a4-b68fec3577f5.jpg not processed
+INFO: Processing e4fe55b9-7d1d-50cb-919a-6decdb2152b7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e4fe55b9-7d1d-50cb-919a-6decdb2152b7.jpg not processed
+INFO: Processing e4b2a286-6874-5daa-8995-04b106fb0d92.jpg
+INFO: Shrink object car
+INFO: Processed 4/3559 images
+INFO: Processing 2341a1b4-8fbd-5b1b-8ae2-c0a02dc1e035.jpg
+INFO: Enlarge object potted plant
+INFO: Processed 5/3559 images
+INFO: Processing 01049ba9-71a4-527d-9a56-74f0c04b53f7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/01049ba9-71a4-527d-9a56-74f0c04b53f7.jpg not processed
+INFO: Processing 6460c4b7-aa3a-55ad-93c5-44bbbd058dc7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6460c4b7-aa3a-55ad-93c5-44bbbd058dc7.jpg not processed
+INFO: Processing cb769014-5f33-566a-a1db-e83242074930.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cb769014-5f33-566a-a1db-e83242074930.jpg not processed
+INFO: Processing 37b0aa1e-f747-55d4-919f-906a6d9f18c2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/37b0aa1e-f747-55d4-919f-906a6d9f18c2.jpg not processed
+INFO: Processing 6abe47df-f95c-524f-a36b-ed0818ef43ac.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6abe47df-f95c-524f-a36b-ed0818ef43ac.jpg not processed
+INFO: Processing 5751c208-1169-52aa-ac99-7e03837f32fd.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5751c208-1169-52aa-ac99-7e03837f32fd.jpg not processed
+INFO: Processing f7957067-e715-5080-82b6-86be5641dab0.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f7957067-e715-5080-82b6-86be5641dab0.jpg not processed
+INFO: Processing f1054fae-7487-5429-8904-ea0e271597d3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f1054fae-7487-5429-8904-ea0e271597d3.jpg not processed
+INFO: Processing 01513d5c-ec3f-52a5-9b2c-a7e0ba9637cc.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/01513d5c-ec3f-52a5-9b2c-a7e0ba9637cc.jpg not processed
+INFO: Processing 74d5faeb-e210-57b2-af1e-09fcad938324.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/74d5faeb-e210-57b2-af1e-09fcad938324.jpg not processed
+INFO: Processing ae1221f9-16a8-51eb-b90d-84e5afdedc76.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ae1221f9-16a8-51eb-b90d-84e5afdedc76.jpg not processed
+INFO: Processing 40571bfa-0c1e-561e-8634-5d2326ad192f.jpg
+INFO: Shrink object cup
+INFO: Processed 6/3559 images
+INFO: Processing 4e47d1db-ca7f-5175-92f3-49dbbe18f111.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4e47d1db-ca7f-5175-92f3-49dbbe18f111.jpg not processed
+INFO: Processing 7f51caea-bddd-5d02-b6f2-eaeef54238ad.jpg
+INFO: Enlarge object baseball glove
+INFO: Processed 7/3559 images
+INFO: Processing 237bfc62-6afe-53ef-a7f8-47ff106b6164.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/237bfc62-6afe-53ef-a7f8-47ff106b6164.jpg not processed
+INFO: Processing 91e130ba-834c-54c5-89bd-dea8525de2dc.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/91e130ba-834c-54c5-89bd-dea8525de2dc.jpg not processed
+INFO: Processing 66f46080-3c86-5bae-8c6f-ad62e859c7d9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/66f46080-3c86-5bae-8c6f-ad62e859c7d9.jpg not processed
+INFO: Processing 75c252d5-51da-5c69-8851-b2b72a60fb0b.jpg
+INFO: Enlarge object car
+INFO: Processed 8/3559 images
+INFO: Processing 9804f219-7413-569b-a8ef-c66a67ad5fd1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9804f219-7413-569b-a8ef-c66a67ad5fd1.jpg not processed
+INFO: Processing a83c1a0c-bc51-5e25-8383-abfba6cec0a0.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a83c1a0c-bc51-5e25-8383-abfba6cec0a0.jpg not processed
+INFO: Processing a0fa81dd-3148-5795-a0f6-dacd465a2ead.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a0fa81dd-3148-5795-a0f6-dacd465a2ead.jpg not processed
+INFO: Processing 817e5600-df97-5f36-92bd-79712849de5a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/817e5600-df97-5f36-92bd-79712849de5a.jpg not processed
+INFO: Processing 54d342c4-a840-5ce0-993d-98473cab3dab.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/54d342c4-a840-5ce0-993d-98473cab3dab.jpg not processed
+INFO: Processing f0ed5cde-2cff-5e3a-a6ba-0f53021314c1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f0ed5cde-2cff-5e3a-a6ba-0f53021314c1.jpg not processed
+INFO: Processing 9aca28ed-bdcc-59fc-b513-e222d5f197af.jpg
+INFO: Shrink object cup
+INFO: Processed 9/3559 images
+INFO: Processing 81670f03-379a-5973-b8a2-9b0cd96883f6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/81670f03-379a-5973-b8a2-9b0cd96883f6.jpg not processed
+INFO: Processing 5ef2143e-1f3e-5ed9-918f-7aab642ba27b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5ef2143e-1f3e-5ed9-918f-7aab642ba27b.jpg not processed
+INFO: Processing 71690794-96cc-5ed9-ad08-619152636e15.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/71690794-96cc-5ed9-ad08-619152636e15.jpg not processed
+INFO: Processing 1a9aa5c3-528f-5f75-9eb8-fc789a4f3850.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1a9aa5c3-528f-5f75-9eb8-fc789a4f3850.jpg not processed
+INFO: Processing 63f54082-7687-586d-add2-f14d0f9dc283.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/63f54082-7687-586d-add2-f14d0f9dc283.jpg not processed
+INFO: Processing aa063e27-18e5-5577-b060-fb5a0e5fb6cc.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/aa063e27-18e5-5577-b060-fb5a0e5fb6cc.jpg not processed
+INFO: Processing 3edccab7-5985-59d8-8dd4-bec8b585df60.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3edccab7-5985-59d8-8dd4-bec8b585df60.jpg not processed
+INFO: Processing ad9d7292-75c0-5ab8-ae24-3abbcc80fcae.jpg
+INFO: Shrink object sports ball
+INFO: Processed 10/3559 images
+INFO: Processing 84af1ec0-c9b0-5e7c-8603-a7fbc53e2688.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/84af1ec0-c9b0-5e7c-8603-a7fbc53e2688.jpg not processed
+INFO: Processing e8242715-41b3-5d03-85c0-c64d5157382c.jpg
+INFO: Shrink object horse
+INFO: Processed 11/3559 images
+INFO: Processing 0858e60f-23e6-5ff5-bdf1-26710c77d166.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0858e60f-23e6-5ff5-bdf1-26710c77d166.jpg not processed
+INFO: Processing fdfbd6bb-287c-5741-9892-ccdf86b80153.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/fdfbd6bb-287c-5741-9892-ccdf86b80153.jpg not processed
+INFO: Processing cc765130-df42-5b63-8b21-1e98be472136.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cc765130-df42-5b63-8b21-1e98be472136.jpg not processed
+INFO: Processing 5f1da009-586b-56e2-ac5a-f9c3bc075cb3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5f1da009-586b-56e2-ac5a-f9c3bc075cb3.jpg not processed
+INFO: Processing 6487f763-9436-5c10-bd86-ce865d531caa.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6487f763-9436-5c10-bd86-ce865d531caa.jpg not processed
+INFO: Processing 2a47b4bb-b49d-5e8a-90f8-2bbad6235567.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2a47b4bb-b49d-5e8a-90f8-2bbad6235567.jpg not processed
+INFO: Processing 293204e2-f9dd-544d-ad26-ff17b5c7bc40.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/293204e2-f9dd-544d-ad26-ff17b5c7bc40.jpg not processed
+INFO: Processing 49e7caa5-9d61-5ad7-a325-c28f0eaafb55.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/49e7caa5-9d61-5ad7-a325-c28f0eaafb55.jpg not processed
+INFO: Processing 49f92fac-7ae7-5887-8014-0f199e71a149.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/49f92fac-7ae7-5887-8014-0f199e71a149.jpg not processed
+INFO: Processing 5c6436d3-fec2-515a-b205-bc8d6f470a37.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5c6436d3-fec2-515a-b205-bc8d6f470a37.jpg not processed
+INFO: Processing cd5f00ea-ea66-5692-ac16-fa74335217b3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cd5f00ea-ea66-5692-ac16-fa74335217b3.jpg not processed
+INFO: Processing 847b6a62-05ea-59ea-bcf2-604923103857.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/847b6a62-05ea-59ea-bcf2-604923103857.jpg not processed
+INFO: Processing ddf627f8-7cc1-5b6d-9e15-8c5eee75b711.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ddf627f8-7cc1-5b6d-9e15-8c5eee75b711.jpg not processed
+INFO: Processing 1c32c05e-c86d-54e8-989a-5a2dfe57e1e9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1c32c05e-c86d-54e8-989a-5a2dfe57e1e9.jpg not processed
+INFO: Processing c36f3a7b-123c-54b4-81bb-826df53f1650.jpg
+INFO: Shrink object sports ball
+INFO: Processed 12/3559 images
+INFO: Processing 9d01560d-75ac-57e2-abd5-736aca0f704d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9d01560d-75ac-57e2-abd5-736aca0f704d.jpg not processed
+INFO: Processing 4efabfaa-539a-5463-aab1-edc4c13982a1.jpg
+INFO: Enlarge object chair
+INFO: Processed 13/3559 images
+INFO: Processing 1ed51d60-f3b9-5f28-8571-9b03a230840c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1ed51d60-f3b9-5f28-8571-9b03a230840c.jpg not processed
+INFO: Processing d6f52865-74bf-57c0-88b6-39c71b1cafa1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d6f52865-74bf-57c0-88b6-39c71b1cafa1.jpg not processed
+INFO: Processing 8bff7245-f936-5ad1-b898-987d34c89f24.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8bff7245-f936-5ad1-b898-987d34c89f24.jpg not processed
+INFO: Processing 6142b927-488d-5cba-84a4-820130e18260.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6142b927-488d-5cba-84a4-820130e18260.jpg not processed
+INFO: Processing 246dbd8f-6264-586f-a97c-f3b4059e7259.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/246dbd8f-6264-586f-a97c-f3b4059e7259.jpg not processed
+INFO: Processing 578a8501-9c19-5186-af23-bbd3473f5fdd.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/578a8501-9c19-5186-af23-bbd3473f5fdd.jpg not processed
+INFO: Processing ee9c708c-e9d7-5a79-92e1-b29c7e28428a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ee9c708c-e9d7-5a79-92e1-b29c7e28428a.jpg not processed
+INFO: Processing e476806e-9773-5dd8-8c95-e4b5e87228d7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e476806e-9773-5dd8-8c95-e4b5e87228d7.jpg not processed
+INFO: Processing 83f301a3-a771-56bf-aedc-1418e67287a4.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/83f301a3-a771-56bf-aedc-1418e67287a4.jpg not processed
+INFO: Processing 78dca85f-7ec0-51a2-954d-367823e19921.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/78dca85f-7ec0-51a2-954d-367823e19921.jpg not processed
+INFO: Processing 4ebb669c-a58d-586f-9fbc-54ec3f6bab81.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4ebb669c-a58d-586f-9fbc-54ec3f6bab81.jpg not processed
+INFO: Processing 37cdb5de-1062-50ba-888c-987b255ec84a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/37cdb5de-1062-50ba-888c-987b255ec84a.jpg not processed
+INFO: Processing 3c769d7f-f212-5678-849a-8eeca81f0cb7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3c769d7f-f212-5678-849a-8eeca81f0cb7.jpg not processed
+INFO: Processing 5c1193e0-a4af-5692-a107-5641e30cb327.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5c1193e0-a4af-5692-a107-5641e30cb327.jpg not processed
+INFO: Processing dcda54ce-deff-502b-a033-e136bd661b9a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/dcda54ce-deff-502b-a033-e136bd661b9a.jpg not processed
+INFO: Processing 852d4c7d-9fd2-5dc3-a9da-b8d54f77e8c1.jpg
+INFO: Shrink object baseball glove
+INFO: Shrink object sports ball
+INFO: Processed 14/3559 images
+INFO: Processing ef5be63f-9687-51ce-9eed-407099499a94.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ef5be63f-9687-51ce-9eed-407099499a94.jpg not processed
+INFO: Processing db9c21f6-eaa9-5db5-99e3-80c841821845.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/db9c21f6-eaa9-5db5-99e3-80c841821845.jpg not processed
+INFO: Processing a5388860-3bf1-54b7-9592-c5989dc3a71c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a5388860-3bf1-54b7-9592-c5989dc3a71c.jpg not processed
+INFO: Processing f09b8648-2188-5eaa-ac08-cf09175641b6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f09b8648-2188-5eaa-ac08-cf09175641b6.jpg not processed
+INFO: Processing ddec992b-cc16-5a5e-81d3-7fd2b39c6ca7.jpg
+INFO: Shrink object sports ball
+INFO: Processed 15/3559 images
+INFO: Processing c8d5396a-2abd-54c5-a9c1-05dc1cbd6ed2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c8d5396a-2abd-54c5-a9c1-05dc1cbd6ed2.jpg not processed
+INFO: Processing 2a4b1b9a-f9a6-59dc-8874-b20af6a64474.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2a4b1b9a-f9a6-59dc-8874-b20af6a64474.jpg not processed
+INFO: Processing f8122353-62b2-56fb-a395-b5571d888456.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f8122353-62b2-56fb-a395-b5571d888456.jpg not processed
+INFO: Processing a724e1e2-568f-5807-a793-a4701d0d9c74.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a724e1e2-568f-5807-a793-a4701d0d9c74.jpg not processed
+INFO: Processing dc2529e1-0aaa-5244-bcd9-aded6be373b8.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/dc2529e1-0aaa-5244-bcd9-aded6be373b8.jpg not processed
+INFO: Processing 0a8d80c7-5f8e-5181-a879-095911bffe11.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0a8d80c7-5f8e-5181-a879-095911bffe11.jpg not processed
+INFO: Processing 314c1204-94f0-5873-9671-68bf1c58e882.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/314c1204-94f0-5873-9671-68bf1c58e882.jpg not processed
+INFO: Processing e6784573-62fc-5331-8a42-3dbce47a4d58.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e6784573-62fc-5331-8a42-3dbce47a4d58.jpg not processed
+INFO: Processing fde94ab8-7133-5e1c-8525-33a894d4bbef.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/fde94ab8-7133-5e1c-8525-33a894d4bbef.jpg not processed
+INFO: Processing e57c8cbd-3471-5262-a0e8-d7ffe54e7893.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e57c8cbd-3471-5262-a0e8-d7ffe54e7893.jpg not processed
+INFO: Processing 05c35f0b-0286-5fdf-a958-54d178bb1370.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/05c35f0b-0286-5fdf-a958-54d178bb1370.jpg not processed
+INFO: Processing 027d57b3-0ded-56f2-9b74-8369047c8ad5.jpg
+INFO: Shrink object sports ball
+INFO: Processed 16/3559 images
+INFO: Processing 49868f7d-c5c5-5070-9814-c5f63ef40b4e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/49868f7d-c5c5-5070-9814-c5f63ef40b4e.jpg not processed
+INFO: Processing f8766127-7fea-53aa-a8cf-dfb030acfe09.jpg
+INFO: Shrink object chair
+INFO: Processed 17/3559 images
+INFO: Processing 7a6bcf39-3ac3-581b-bfe1-bc30d43f0566.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7a6bcf39-3ac3-581b-bfe1-bc30d43f0566.jpg not processed
+INFO: Processing e94042c0-2464-55c1-8be0-c9899e40586f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e94042c0-2464-55c1-8be0-c9899e40586f.jpg not processed
+INFO: Processing 676ec8a3-2fcc-517c-913e-401a387b3ccf.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/676ec8a3-2fcc-517c-913e-401a387b3ccf.jpg not processed
+INFO: Processing f7bce168-924b-5681-9ece-2ea044487d08.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f7bce168-924b-5681-9ece-2ea044487d08.jpg not processed
+INFO: Processing a3a9845e-03a2-5d4c-a46c-41f2245b0b69.jpg
+INFO: Enlarge object dog
+INFO: Processed 18/3559 images
+INFO: Processing 7d29330b-b330-5000-a8f8-7051106cdd9f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7d29330b-b330-5000-a8f8-7051106cdd9f.jpg not processed
+INFO: Processing ce695c69-418d-5f0e-9f53-8cda1bcc7195.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ce695c69-418d-5f0e-9f53-8cda1bcc7195.jpg not processed
+INFO: Processing fa464953-3341-5594-97a7-7bcb73601ee3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/fa464953-3341-5594-97a7-7bcb73601ee3.jpg not processed
+INFO: Processing b44c4f91-1cca-5eab-9de7-51c8ba7f789a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b44c4f91-1cca-5eab-9de7-51c8ba7f789a.jpg not processed
+INFO: Processing b55cf214-3a8e-5cc6-a1d3-ea99c2d90fdb.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b55cf214-3a8e-5cc6-a1d3-ea99c2d90fdb.jpg not processed
+INFO: Processing 9493692f-6107-5e6f-9d08-f5aab3029fbe.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9493692f-6107-5e6f-9d08-f5aab3029fbe.jpg not processed
+INFO: Processing 7fca0b50-d4a6-57d1-8d73-27196cb43edb.jpg
+INFO: Enlarge object wine glass
+INFO: Processed 19/3559 images
+INFO: Processing 01c1cfe0-c687-56e6-a1ee-0c5701cc5689.jpg
+INFO: Shrink object sports ball
+INFO: Enlarge object baseball glove
+INFO: Processed 20/3559 images
+INFO: Processing f8ae6731-83df-5956-93e6-ec0883f019de.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f8ae6731-83df-5956-93e6-ec0883f019de.jpg not processed
+INFO: Processing a52ff1bc-d1c7-5763-a48e-87a01e470153.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a52ff1bc-d1c7-5763-a48e-87a01e470153.jpg not processed
+INFO: Processing a3977b78-0b9f-54ee-b0a8-7e44a133e4b3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a3977b78-0b9f-54ee-b0a8-7e44a133e4b3.jpg not processed
+INFO: Processing 7e17951a-18e4-5b95-9985-576203e58b7d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7e17951a-18e4-5b95-9985-576203e58b7d.jpg not processed
+INFO: Processing a1a51df3-b142-5929-a181-6ea37fa067b4.jpg
+INFO: Shrink object car
+INFO: Processed 21/3559 images
+INFO: Processing 5aae83b6-79cf-57b3-af89-140134ebf9f1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5aae83b6-79cf-57b3-af89-140134ebf9f1.jpg not processed
+INFO: Processing c5f85474-c3a9-5871-ad6c-4f89b5b7164b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c5f85474-c3a9-5871-ad6c-4f89b5b7164b.jpg not processed
+INFO: Processing 89f6c4c5-4302-57c1-8c2a-6129778fd168.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/89f6c4c5-4302-57c1-8c2a-6129778fd168.jpg not processed
+INFO: Processing ef34eaa0-af98-5b21-875c-c0352359b73c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ef34eaa0-af98-5b21-875c-c0352359b73c.jpg not processed
+INFO: Processing a23abfc1-f33c-5e63-a154-41245ae5ec0c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a23abfc1-f33c-5e63-a154-41245ae5ec0c.jpg not processed
+INFO: Processing 8ce02a68-7c03-5077-9711-3b50ae777e0c.jpg
+INFO: Enlarge object chair
+INFO: Enlarge object vase
+INFO: Processed 22/3559 images
+INFO: Processing 1323dcda-0223-5a0d-a87d-87662cf16f5d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1323dcda-0223-5a0d-a87d-87662cf16f5d.jpg not processed
+INFO: Processing ff9ec9c8-07fc-56aa-b1b5-53d406cf7825.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ff9ec9c8-07fc-56aa-b1b5-53d406cf7825.jpg not processed
+INFO: Processing ef91d8e5-572e-5ceb-a353-c0ed2e8da292.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ef91d8e5-572e-5ceb-a353-c0ed2e8da292.jpg not processed
+INFO: Processing c3dd5148-328c-5fea-ab3e-8c8c90987907.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c3dd5148-328c-5fea-ab3e-8c8c90987907.jpg not processed
+INFO: Processing bebdedf1-c550-5b01-8d98-a75eb7551078.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bebdedf1-c550-5b01-8d98-a75eb7551078.jpg not processed
+INFO: Processing 597e0eaa-bdb6-59fd-bbeb-e3f3ba171bb5.jpg
+INFO: Shrink object chair
+INFO: Enlarge object couch
+INFO: Processed 23/3559 images
+INFO: Processing cdf2cfda-1dae-5a8a-a9d3-ed6ea960d622.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cdf2cfda-1dae-5a8a-a9d3-ed6ea960d622.jpg not processed
+INFO: Processing c3b5b37c-daa5-5170-b178-792780eee327.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c3b5b37c-daa5-5170-b178-792780eee327.jpg not processed
+INFO: Processing 908c609a-c4d5-504a-94be-222ac9f8f7a6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/908c609a-c4d5-504a-94be-222ac9f8f7a6.jpg not processed
+INFO: Processing 77252c95-5a68-5d5f-808e-0c221ebcb097.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/77252c95-5a68-5d5f-808e-0c221ebcb097.jpg not processed
+INFO: Processing b00d3e89-37f1-50c4-820a-20e1516755d3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b00d3e89-37f1-50c4-820a-20e1516755d3.jpg not processed
+INFO: Processing 905a1523-9c0d-550d-8807-c0cac72e4c8d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/905a1523-9c0d-550d-8807-c0cac72e4c8d.jpg not processed
+INFO: Processing c0ca7d43-34d7-50b6-9101-1e8ac964e299.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c0ca7d43-34d7-50b6-9101-1e8ac964e299.jpg not processed
+INFO: Processing fb4ceb55-c671-5860-a737-8292b3ae1855.jpg
+INFO: Enlarge object dog
+INFO: Processed 24/3559 images
+INFO: Processing a571d9f7-c4b7-54a8-a79a-d63abcd65615.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a571d9f7-c4b7-54a8-a79a-d63abcd65615.jpg not processed
+INFO: Processing bffce978-0916-5477-a225-4f0ffb096309.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bffce978-0916-5477-a225-4f0ffb096309.jpg not processed
+INFO: Processing d3f8933a-8511-5e1b-ae17-eacb92ccbcdc.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d3f8933a-8511-5e1b-ae17-eacb92ccbcdc.jpg not processed
+INFO: Processing 8ba1f35e-3ca6-5da6-a3b4-77f832ee77e4.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8ba1f35e-3ca6-5da6-a3b4-77f832ee77e4.jpg not processed
+INFO: Processing 6104407c-7dde-533f-a48e-db3c4a9c33c7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6104407c-7dde-533f-a48e-db3c4a9c33c7.jpg not processed
+INFO: Processing f0c8034c-dfcc-5513-a216-8d002e10b665.jpg
+INFO: Enlarge object sports ball
+INFO: Processed 25/3559 images
+INFO: Processing 23177abd-7c4c-5b3e-8fc4-9d7b5d33fc19.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/23177abd-7c4c-5b3e-8fc4-9d7b5d33fc19.jpg not processed
+INFO: Processing 5a298343-8213-5597-a214-60d81dd965b0.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5a298343-8213-5597-a214-60d81dd965b0.jpg not processed
+INFO: Processing 70d1ed17-9c42-59ee-bd76-dbe881456028.jpg
+INFO: Shrink object cup
+INFO: Processed 26/3559 images
+INFO: Processing a3d6ba80-61b2-5320-b1be-bdf060700870.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a3d6ba80-61b2-5320-b1be-bdf060700870.jpg not processed
+INFO: Processing 09a67326-3115-5309-8585-905fdfcff830.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/09a67326-3115-5309-8585-905fdfcff830.jpg not processed
+INFO: Processing edeacd7c-9316-538b-bc53-e5e2d402ad91.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/edeacd7c-9316-538b-bc53-e5e2d402ad91.jpg not processed
+INFO: Processing e7a331f1-10ec-5c28-be35-1d186a9beff0.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e7a331f1-10ec-5c28-be35-1d186a9beff0.jpg not processed
+INFO: Processing 12aefa4b-d159-59d0-949f-593a0f73234c.jpg
+INFO: Enlarge object chair
+INFO: Processed 27/3559 images
+INFO: Processing c1eb5aae-d396-57c6-a4fd-64dc8dd79c1a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c1eb5aae-d396-57c6-a4fd-64dc8dd79c1a.jpg not processed
+INFO: Processing 2fc3a720-e634-56db-acdb-5ab6c8bc7448.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2fc3a720-e634-56db-acdb-5ab6c8bc7448.jpg not processed
+INFO: Processing 2a66ede6-f135-544f-8b09-f69f7781ff3e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2a66ede6-f135-544f-8b09-f69f7781ff3e.jpg not processed
+INFO: Processing 5c7344e6-7f7b-5d48-b852-821c6f3603ca.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5c7344e6-7f7b-5d48-b852-821c6f3603ca.jpg not processed
+INFO: Processing 1698fdc6-2dcb-5eb0-9cd0-00cb3e56bb3a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1698fdc6-2dcb-5eb0-9cd0-00cb3e56bb3a.jpg not processed
+INFO: Processing 5a735312-64bd-5c03-bae2-ac44063e67d3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5a735312-64bd-5c03-bae2-ac44063e67d3.jpg not processed
+INFO: Processing 72eaa699-e71c-5e36-88a6-87aeccf7772a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/72eaa699-e71c-5e36-88a6-87aeccf7772a.jpg not processed
+INFO: Processing b6011ee7-da9b-5289-9220-00d70ce6cc15.jpg
+INFO: Enlarge object sports ball
+INFO: Processed 28/3559 images
+INFO: Processing e499143f-1a4b-5be3-8263-ab25ca3fc599.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e499143f-1a4b-5be3-8263-ab25ca3fc599.jpg not processed
+INFO: Processing dc336dff-e840-59d6-b8ab-d5e5fee3ef04.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/dc336dff-e840-59d6-b8ab-d5e5fee3ef04.jpg not processed
+INFO: Processing d5d603e7-1a35-52f5-acf3-1310d8635a25.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d5d603e7-1a35-52f5-acf3-1310d8635a25.jpg not processed
+INFO: Processing b50b7871-5a39-56b7-b331-11a8cc9b6d52.jpg
+INFO: Enlarge object bottle
+INFO: Processed 29/3559 images
+INFO: Processing a84d2efe-22d5-54b6-9efb-be5b60d9ec40.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a84d2efe-22d5-54b6-9efb-be5b60d9ec40.jpg not processed
+INFO: Processing 24d3350c-c73c-5bec-94da-84e30e3c8042.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/24d3350c-c73c-5bec-94da-84e30e3c8042.jpg not processed
+INFO: Processing 6bb38bb2-515f-5565-ad0a-446d8b6432ff.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6bb38bb2-515f-5565-ad0a-446d8b6432ff.jpg not processed
+INFO: Processing 7227564a-57e3-5470-aaf8-2de4b99aa7b9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7227564a-57e3-5470-aaf8-2de4b99aa7b9.jpg not processed
+INFO: Processing 935e22d5-5f01-505e-a073-82d6e8c8d05d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/935e22d5-5f01-505e-a073-82d6e8c8d05d.jpg not processed
+INFO: Processing 7aa57d14-d3ae-5171-afc3-e6f1db2771a2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7aa57d14-d3ae-5171-afc3-e6f1db2771a2.jpg not processed
+INFO: Processing 508dc9ed-d36c-55b0-b5bf-ba3b56984870.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/508dc9ed-d36c-55b0-b5bf-ba3b56984870.jpg not processed
+INFO: Processing 952d5a21-88e9-55b5-ba5d-eddb0750a73c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/952d5a21-88e9-55b5-ba5d-eddb0750a73c.jpg not processed
+INFO: Processing d3f46eaf-9022-5f93-87f4-ca37c65c32ce.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d3f46eaf-9022-5f93-87f4-ca37c65c32ce.jpg not processed
+INFO: Processing bb17dcd3-23bf-57e4-b896-cadaf711f4f5.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bb17dcd3-23bf-57e4-b896-cadaf711f4f5.jpg not processed
+INFO: Processing 6623ccf0-0656-5923-909d-16daa48e6b17.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6623ccf0-0656-5923-909d-16daa48e6b17.jpg not processed
+INFO: Processing 9a4b3a25-b185-5d73-8233-4c1ce97f5b67.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9a4b3a25-b185-5d73-8233-4c1ce97f5b67.jpg not processed
+INFO: Processing eeee644f-ec76-5776-b517-e76f16803c7a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/eeee644f-ec76-5776-b517-e76f16803c7a.jpg not processed
+INFO: Processing 51381538-b424-5e8f-80e2-c48ed33258a9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/51381538-b424-5e8f-80e2-c48ed33258a9.jpg not processed
+INFO: Processing a876754a-7ab0-56d9-a270-295207ad8bc9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a876754a-7ab0-56d9-a270-295207ad8bc9.jpg not processed
+INFO: Processing 4d428f34-9ae0-565f-be05-e8e578028f6d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4d428f34-9ae0-565f-be05-e8e578028f6d.jpg not processed
+INFO: Processing a203d808-6dc3-50f4-8a16-218d27e6ca30.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a203d808-6dc3-50f4-8a16-218d27e6ca30.jpg not processed
+INFO: Processing 7f459934-387c-5be3-95ed-fb4e68526412.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7f459934-387c-5be3-95ed-fb4e68526412.jpg not processed
+INFO: Processing eb2fefe4-f971-5dba-8b7d-b5ab469bdd60.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/eb2fefe4-f971-5dba-8b7d-b5ab469bdd60.jpg not processed
+INFO: Processing 921ef35b-0456-5c68-8d94-a5e104733982.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/921ef35b-0456-5c68-8d94-a5e104733982.jpg not processed
+INFO: Processing 87a5b029-c98d-5aa6-b853-8f7e4cda10e6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/87a5b029-c98d-5aa6-b853-8f7e4cda10e6.jpg not processed
+INFO: Processing 5db25a76-12b4-56fb-a9cb-191ccd0f3b03.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5db25a76-12b4-56fb-a9cb-191ccd0f3b03.jpg not processed
+INFO: Processing b377f69a-0f93-5bee-bb15-e51b623f362b.jpg
+INFO: Shrink object baseball bat
+INFO: Processed 30/3559 images
+INFO: Processing 932ea6b0-69b9-5696-b3a6-ed81f9d8af1f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/932ea6b0-69b9-5696-b3a6-ed81f9d8af1f.jpg not processed
+INFO: Processing 0a191d31-ea76-5370-813e-fc85ec608489.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0a191d31-ea76-5370-813e-fc85ec608489.jpg not processed
+INFO: Processing 4c10e266-82b8-547e-8eda-1bc6b5c1b26a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4c10e266-82b8-547e-8eda-1bc6b5c1b26a.jpg not processed
+INFO: Processing cba5b7e1-0894-5150-8339-8a1e4c44427b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cba5b7e1-0894-5150-8339-8a1e4c44427b.jpg not processed
+INFO: Processing a8f42771-42b3-5fa2-9817-c1975639d80b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a8f42771-42b3-5fa2-9817-c1975639d80b.jpg not processed
+INFO: Processing 4225cb15-c6a1-55b9-b49f-b28e59a86fda.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4225cb15-c6a1-55b9-b49f-b28e59a86fda.jpg not processed
+INFO: Processing f08f99f1-0cf3-5eee-b16e-5157682bc421.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f08f99f1-0cf3-5eee-b16e-5157682bc421.jpg not processed
+INFO: Processing cb48bbdc-3730-530f-8893-2be7bff44c8e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cb48bbdc-3730-530f-8893-2be7bff44c8e.jpg not processed
+INFO: Processing 220162f8-ad8e-5a62-897e-b10f811072c8.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/220162f8-ad8e-5a62-897e-b10f811072c8.jpg not processed
+INFO: Processing fd517ba8-37bf-5339-9f71-ef6ed9e91de7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/fd517ba8-37bf-5339-9f71-ef6ed9e91de7.jpg not processed
+INFO: Processing acd01b8c-2dd1-5045-b783-98ce23cff8b2.jpg
+INFO: Shrink object chair
+INFO: Processed 31/3559 images
+INFO: Processing f7ac21e5-1d71-5210-997b-65c0ab8c3f88.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f7ac21e5-1d71-5210-997b-65c0ab8c3f88.jpg not processed
+INFO: Processing f53fdf61-acce-5820-a248-f8759ff6901d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f53fdf61-acce-5820-a248-f8759ff6901d.jpg not processed
+INFO: Processing 3e38ba4a-3275-5012-ba44-e594830b86e7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3e38ba4a-3275-5012-ba44-e594830b86e7.jpg not processed
+INFO: Processing 4df876b2-43fb-575d-9ef3-a79a27e1e797.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4df876b2-43fb-575d-9ef3-a79a27e1e797.jpg not processed
+INFO: Processing bbbd860a-632a-5fa4-b27d-c44d89e6c47f.jpg
+INFO: Enlarge object bear
+INFO: Processed 32/3559 images
+INFO: Processing 9bddd7ee-99c7-5e90-849b-8d5a66c5400c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9bddd7ee-99c7-5e90-849b-8d5a66c5400c.jpg not processed
+INFO: Processing 975ffcd3-fbaf-5a8c-b7b6-47b85a6b3ea3.jpg
+INFO: Enlarge object baseball glove
+INFO: Processed 33/3559 images
+INFO: Processing fe9906f2-ba57-5dc3-be78-d0dfee79d168.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/fe9906f2-ba57-5dc3-be78-d0dfee79d168.jpg not processed
+INFO: Processing d6a1554c-687f-5b31-87f4-0a153e0b3055.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d6a1554c-687f-5b31-87f4-0a153e0b3055.jpg not processed
+INFO: Processing 8f24ba9a-e379-50f1-be77-58b590909ada.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8f24ba9a-e379-50f1-be77-58b590909ada.jpg not processed
+INFO: Processing 0fa37ad8-bac3-5622-af40-1f3b0b3d3737.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0fa37ad8-bac3-5622-af40-1f3b0b3d3737.jpg not processed
+INFO: Processing 4caf588d-506c-5097-a887-e361951e881a.jpg
+INFO: Enlarge object motorcycle
+INFO: Processed 34/3559 images
+INFO: Processing 659da04f-9a79-5456-9581-7290e9c91eb4.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/659da04f-9a79-5456-9581-7290e9c91eb4.jpg not processed
+INFO: Processing 786fd8f8-de1a-5432-9221-0881d956019e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/786fd8f8-de1a-5432-9221-0881d956019e.jpg not processed
+INFO: Processing 00fd3c79-1d59-51a7-82ea-7860f06e7499.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/00fd3c79-1d59-51a7-82ea-7860f06e7499.jpg not processed
+INFO: Processing be101ffc-7140-5d04-902a-2668f5756045.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/be101ffc-7140-5d04-902a-2668f5756045.jpg not processed
+INFO: Processing b57bd5f1-80e4-5d5c-b28f-d86fa1b15132.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b57bd5f1-80e4-5d5c-b28f-d86fa1b15132.jpg not processed
+INFO: Processing 8d91cf12-fb09-5c19-9481-72473fd898c6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8d91cf12-fb09-5c19-9481-72473fd898c6.jpg not processed
+INFO: Processing b2827a2d-b7e4-526c-9c87-156ee1121c23.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b2827a2d-b7e4-526c-9c87-156ee1121c23.jpg not processed
+INFO: Processing abec2624-4fa9-5361-b418-c79eee09dc59.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/abec2624-4fa9-5361-b418-c79eee09dc59.jpg not processed
+INFO: Processing 09efb80f-c391-541f-ae5f-3a08f9f070f0.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/09efb80f-c391-541f-ae5f-3a08f9f070f0.jpg not processed
+INFO: Processing 1adc0ffe-2389-55b5-85ae-05388fb9f27b.jpg
+INFO: Shrink object baseball glove
+INFO: Processed 35/3559 images
+INFO: Processing 520d178a-2dcd-5c30-a5df-0e917241f443.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/520d178a-2dcd-5c30-a5df-0e917241f443.jpg not processed
+INFO: Processing f5ac9a42-7b13-50c1-aebe-655fce24fc1c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f5ac9a42-7b13-50c1-aebe-655fce24fc1c.jpg not processed
+INFO: Processing f35582c1-de91-5729-af56-c069c09e2813.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f35582c1-de91-5729-af56-c069c09e2813.jpg not processed
+INFO: Processing 9b36850c-ea81-4230-b397-1e720d043801.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9b36850c-ea81-4230-b397-1e720d043801.jpg not processed
+INFO: Processing 79bfd9c1-4288-5371-8054-799797b8f62f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/79bfd9c1-4288-5371-8054-799797b8f62f.jpg not processed
+INFO: Processing 8972c46b-fa66-56ee-994c-6f1737dfd882.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8972c46b-fa66-56ee-994c-6f1737dfd882.jpg not processed
+INFO: Processing a71190d2-ca32-5992-9ace-17e3d63daa66.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a71190d2-ca32-5992-9ace-17e3d63daa66.jpg not processed
+INFO: Processing 04286968-fbda-5bbe-a449-99f877d7c97a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/04286968-fbda-5bbe-a449-99f877d7c97a.jpg not processed
+INFO: Processing 48869887-6dc2-551a-b2ca-5c2293715a1e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/48869887-6dc2-551a-b2ca-5c2293715a1e.jpg not processed
+INFO: Processing c6085d1b-d25a-5a85-826e-57bc83b0ace3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c6085d1b-d25a-5a85-826e-57bc83b0ace3.jpg not processed
+INFO: Processing b02a1cba-f37c-551e-876d-6ebc2ece22e1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b02a1cba-f37c-551e-876d-6ebc2ece22e1.jpg not processed
+INFO: Processing c6e58b08-4aa2-5b3c-a4df-364dafae299c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c6e58b08-4aa2-5b3c-a4df-364dafae299c.jpg not processed
+INFO: Processing 991b3024-8dfa-5c7b-adeb-86b7a6bd4dc5.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/991b3024-8dfa-5c7b-adeb-86b7a6bd4dc5.jpg not processed
+INFO: Processing f139396d-0157-5bee-8aff-8216c8c9bd6c.jpg
+INFO: Shrink object tv
+INFO: Processed 36/3559 images
+INFO: Processing 328f3a05-464a-5f14-86b0-fdc0dbc3a7c1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/328f3a05-464a-5f14-86b0-fdc0dbc3a7c1.jpg not processed
+INFO: Processing 58369784-3d1e-5972-9a6d-942950affef8.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/58369784-3d1e-5972-9a6d-942950affef8.jpg not processed
+INFO: Processing 63a8416c-eb6b-514f-bf19-9e26fd10838e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/63a8416c-eb6b-514f-bf19-9e26fd10838e.jpg not processed
+INFO: Processing e840950e-2f7a-5c5a-8529-7472116e40ec.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e840950e-2f7a-5c5a-8529-7472116e40ec.jpg not processed
+INFO: Processing e4bcab07-2627-5bff-b248-bf2b1140716c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e4bcab07-2627-5bff-b248-bf2b1140716c.jpg not processed
+INFO: Processing 5bd1d36f-c329-5bac-8468-db47dc124d46.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5bd1d36f-c329-5bac-8468-db47dc124d46.jpg not processed
+INFO: Processing c2a9f052-c01d-5750-b779-602c555eb574.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c2a9f052-c01d-5750-b779-602c555eb574.jpg not processed
+INFO: Processing 6272f1f9-0d22-59fc-9cde-a4b7c2558df2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6272f1f9-0d22-59fc-9cde-a4b7c2558df2.jpg not processed
+INFO: Processing ff525e7b-54cb-5c15-9b59-983f51d173e5.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ff525e7b-54cb-5c15-9b59-983f51d173e5.jpg not processed
+INFO: Processing 8b650619-4c3a-50d8-b3af-0a42e2a65fa7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8b650619-4c3a-50d8-b3af-0a42e2a65fa7.jpg not processed
+INFO: Processing 0114bf92-5fc8-578f-a7d1-e6929f1606ae.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0114bf92-5fc8-578f-a7d1-e6929f1606ae.jpg not processed
+INFO: Processing dc982395-d5d5-51f6-aad7-d453d26db971.jpg
+INFO: Shrink object cup
+INFO: Processed 37/3559 images
+INFO: Processing b59c8ec4-b6fc-591b-976d-2492ad78719f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b59c8ec4-b6fc-591b-976d-2492ad78719f.jpg not processed
+INFO: Processing a243d828-384a-5be1-b95a-d97018cafd22.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a243d828-384a-5be1-b95a-d97018cafd22.jpg not processed
+INFO: Processing 89fdc552-8f2c-5ece-86c5-294aba0172f6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/89fdc552-8f2c-5ece-86c5-294aba0172f6.jpg not processed
+INFO: Processing bfbca8d1-bca5-51e6-a861-a8094354f4f8.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bfbca8d1-bca5-51e6-a861-a8094354f4f8.jpg not processed
+INFO: Processing bcfc1fd4-03dc-5343-8807-1039ed5f737d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bcfc1fd4-03dc-5343-8807-1039ed5f737d.jpg not processed
+INFO: Processing 16fc94a8-6f7b-50ca-80a6-b1a7255f63e6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/16fc94a8-6f7b-50ca-80a6-b1a7255f63e6.jpg not processed
+INFO: Processing 12425082-0139-3544-967e-5e1831337892.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/12425082-0139-3544-967e-5e1831337892.jpg not processed
+INFO: Processing 29c424ec-759f-37ea-ad48-7499edf7fad7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/29c424ec-759f-37ea-ad48-7499edf7fad7.jpg not processed
+INFO: Processing 5fb90cb9-b1a4-5182-a301-c8086482e4de.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5fb90cb9-b1a4-5182-a301-c8086482e4de.jpg not processed
+INFO: Processing c9a561d0-f0c6-5509-a1b1-5307dff94a76.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c9a561d0-f0c6-5509-a1b1-5307dff94a76.jpg not processed
+INFO: Processing 8bc4bb73-673c-5c0c-9dfc-ab4a6169bc8a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8bc4bb73-673c-5c0c-9dfc-ab4a6169bc8a.jpg not processed
+INFO: Processing 23deb547-9b42-508f-8464-a0d3d7ca3b20.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/23deb547-9b42-508f-8464-a0d3d7ca3b20.jpg not processed
+INFO: Processing 72fa6873-96dd-53c6-9acc-f24166f599ed.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/72fa6873-96dd-53c6-9acc-f24166f599ed.jpg not processed
+INFO: Processing 9712c6e2-68c5-5dfa-998d-eaeb59f2ab52.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9712c6e2-68c5-5dfa-998d-eaeb59f2ab52.jpg not processed
+INFO: Processing cc19a22b-ead2-5348-a5b5-aa1ecc4b8d0b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cc19a22b-ead2-5348-a5b5-aa1ecc4b8d0b.jpg not processed
+INFO: Processing e65a5a4e-4d5b-51f8-90d1-88a0c3fb2333.jpg
+INFO: Shrink object sports ball
+INFO: Processed 38/3559 images
+INFO: Processing d3cb4949-e98d-57c8-bd66-844ddedbd0bc.jpg
+INFO: Enlarge object couch
+INFO: Processed 39/3559 images
+INFO: Processing 3fc1db9f-1e36-5509-9ded-8ce281c3507b.jpg
+INFO: Shrink object cell phone
+INFO: Processed 40/3559 images
+INFO: Processing ec6ac7c9-8703-5715-a8b9-77eef371c907.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ec6ac7c9-8703-5715-a8b9-77eef371c907.jpg not processed
+INFO: Processing a7dc7186-e30f-55e1-999f-065bf9c2cd1e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a7dc7186-e30f-55e1-999f-065bf9c2cd1e.jpg not processed
+INFO: Processing 6dc6cc8a-8cb3-518f-a4e3-5aace89070b2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6dc6cc8a-8cb3-518f-a4e3-5aace89070b2.jpg not processed
+INFO: Processing 4aca5038-b6d9-5c1b-8880-84ee5783d80d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4aca5038-b6d9-5c1b-8880-84ee5783d80d.jpg not processed
+INFO: Processing 85042ddb-a424-5603-aa4b-696af99a6423.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/85042ddb-a424-5603-aa4b-696af99a6423.jpg not processed
+INFO: Processing 0a52ab51-7722-593e-b3c7-086e85806703.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0a52ab51-7722-593e-b3c7-086e85806703.jpg not processed
+INFO: Processing ebe107df-9865-534a-93cd-9353bb7b38c6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ebe107df-9865-534a-93cd-9353bb7b38c6.jpg not processed
+INFO: Processing e661c413-63b8-5ee4-8f1b-2c2aca5b2e04.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e661c413-63b8-5ee4-8f1b-2c2aca5b2e04.jpg not processed
+INFO: Processing 983455d9-e666-53b9-93a8-99a819cdeb58.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/983455d9-e666-53b9-93a8-99a819cdeb58.jpg not processed
+INFO: Processing 0be50140-025b-5bc0-89a4-427de366e785.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0be50140-025b-5bc0-89a4-427de366e785.jpg not processed
+INFO: Processing be8fcf43-9733-5361-8c1f-70f0e2f91a4c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/be8fcf43-9733-5361-8c1f-70f0e2f91a4c.jpg not processed
+INFO: Processing 071b2863-68f3-5421-a4d3-73282678c969.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/071b2863-68f3-5421-a4d3-73282678c969.jpg not processed
+INFO: Processing 248caf65-cd80-52ca-98d4-5bd79516b93c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/248caf65-cd80-52ca-98d4-5bd79516b93c.jpg not processed
+INFO: Processing 274be865-532b-568a-8dfc-31cbb9ca691e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/274be865-532b-568a-8dfc-31cbb9ca691e.jpg not processed
+INFO: Processing 41f45d20-fa5e-5459-88dd-68263380e0e2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/41f45d20-fa5e-5459-88dd-68263380e0e2.jpg not processed
+INFO: Processing c65ddef5-08b1-5d28-8e0b-c80e79891b2d.jpg
+INFO: Shrink object refrigerator
+INFO: Processed 41/3559 images
+INFO: Processing 9bef4388-96a6-57dd-a0c8-a4b75d0512ef.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9bef4388-96a6-57dd-a0c8-a4b75d0512ef.jpg not processed
+INFO: Processing 7b75e3eb-f3ab-5dda-9b0f-489aec6c7b3e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7b75e3eb-f3ab-5dda-9b0f-489aec6c7b3e.jpg not processed
+INFO: Processing 79c436d4-a349-57c1-b35d-ab8ef1fad78f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/79c436d4-a349-57c1-b35d-ab8ef1fad78f.jpg not processed
+INFO: Processing e2f75d3b-e3b9-55d0-8c28-546be6aa51d6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e2f75d3b-e3b9-55d0-8c28-546be6aa51d6.jpg not processed
+INFO: Processing 4d6ff484-048f-566b-9d2e-90ef3999d038.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4d6ff484-048f-566b-9d2e-90ef3999d038.jpg not processed
+INFO: Processing 0fe367e1-ad56-5296-9f7f-f0fffe913a64.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0fe367e1-ad56-5296-9f7f-f0fffe913a64.jpg not processed
+INFO: Processing 0988781c-ee25-5d94-a330-b3ed0999eaa9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0988781c-ee25-5d94-a330-b3ed0999eaa9.jpg not processed
+INFO: Processing e9faa57c-fd58-5bb1-8604-b687587b3b6d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e9faa57c-fd58-5bb1-8604-b687587b3b6d.jpg not processed
+INFO: Processing 95020953-721c-5b75-a9d5-09f06063c178.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/95020953-721c-5b75-a9d5-09f06063c178.jpg not processed
+INFO: Processing cfe5e227-cd1e-50dc-9791-5b2d0fb6c902.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cfe5e227-cd1e-50dc-9791-5b2d0fb6c902.jpg not processed
+INFO: Processing 66f24590-b547-5c7e-a733-50b67d11909e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/66f24590-b547-5c7e-a733-50b67d11909e.jpg not processed
+INFO: Processing 7f184d23-9c49-3087-808b-f51328766ba7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7f184d23-9c49-3087-808b-f51328766ba7.jpg not processed
+INFO: Processing 54758e62-6548-594d-8c6c-a9b4c2425c79.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/54758e62-6548-594d-8c6c-a9b4c2425c79.jpg not processed
+INFO: Processing 66e6f7a4-20d4-51b0-95ab-32cfd52b5c4c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/66e6f7a4-20d4-51b0-95ab-32cfd52b5c4c.jpg not processed
+INFO: Processing 7ee6b0f8-4a35-523c-8a10-c6c9977d1b35.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7ee6b0f8-4a35-523c-8a10-c6c9977d1b35.jpg not processed
+INFO: Processing afbc5dee-eb93-56e5-861d-626d1a5adb8d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/afbc5dee-eb93-56e5-861d-626d1a5adb8d.jpg not processed
+INFO: Processing 21885b07-cbde-5348-955d-b81d11789c03.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/21885b07-cbde-5348-955d-b81d11789c03.jpg not processed
+INFO: Processing 55baac8d-e111-55a5-bf8a-58acbc77f88d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/55baac8d-e111-55a5-bf8a-58acbc77f88d.jpg not processed
+INFO: Processing cca83198-4445-53a5-8d5d-d7dba79129e6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cca83198-4445-53a5-8d5d-d7dba79129e6.jpg not processed
+INFO: Processing 986b0f96-531c-53e6-bae9-21846237c4cb.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/986b0f96-531c-53e6-bae9-21846237c4cb.jpg not processed
+INFO: Processing 389a5f37-b0ba-5151-9ce6-258f9d30a997.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/389a5f37-b0ba-5151-9ce6-258f9d30a997.jpg not processed
+INFO: Processing 58c568ab-7e45-52c2-89ee-4528d842c434.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/58c568ab-7e45-52c2-89ee-4528d842c434.jpg not processed
+INFO: Processing 9d9b0044-878a-5f0c-8525-a2645dd00758.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9d9b0044-878a-5f0c-8525-a2645dd00758.jpg not processed
+INFO: Processing ee6028ce-0dd9-5bb3-aedc-220dce493218.jpg
+INFO: Enlarge object bottle
+INFO: Processed 42/3559 images
+INFO: Processing a3610dea-d807-5004-8d20-47a2aea874d8.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a3610dea-d807-5004-8d20-47a2aea874d8.jpg not processed
+INFO: Processing 93e1cfe6-b8b8-5513-a4e4-ceef1dde9e6d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/93e1cfe6-b8b8-5513-a4e4-ceef1dde9e6d.jpg not processed
+INFO: Processing ca8f98b3-3ae0-543f-bc3c-23026a551119.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ca8f98b3-3ae0-543f-bc3c-23026a551119.jpg not processed
+INFO: Processing ec90653e-d8b2-57dc-b3e4-59f4c450f41b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ec90653e-d8b2-57dc-b3e4-59f4c450f41b.jpg not processed
+INFO: Processing cf30da0a-6c62-5e06-a615-c6660b9e7a41.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cf30da0a-6c62-5e06-a615-c6660b9e7a41.jpg not processed
+INFO: Processing a636817b-e631-5875-af51-8af7acf17311.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a636817b-e631-5875-af51-8af7acf17311.jpg not processed
+INFO: Processing 44317a4c-5e13-564e-be7b-d7792ddf9e36.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/44317a4c-5e13-564e-be7b-d7792ddf9e36.jpg not processed
+INFO: Processing ad80ba98-bf93-522c-ad0f-f75112c1e68a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ad80ba98-bf93-522c-ad0f-f75112c1e68a.jpg not processed
+INFO: Processing 84984ebd-f161-509f-88f4-e3122b49e34e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/84984ebd-f161-509f-88f4-e3122b49e34e.jpg not processed
+INFO: Processing 54d3abb8-39dd-5718-ac2d-8c645e0c8ae1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/54d3abb8-39dd-5718-ac2d-8c645e0c8ae1.jpg not processed
+INFO: Processing fd27c572-75cc-545a-b035-184bcd06fd98.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/fd27c572-75cc-545a-b035-184bcd06fd98.jpg not processed
+INFO: Processing 1ca7d130-7961-5356-8144-fb983f532c18.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1ca7d130-7961-5356-8144-fb983f532c18.jpg not processed
+INFO: Processing f42f4ce2-6474-5f57-af77-0b6d04731832.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f42f4ce2-6474-5f57-af77-0b6d04731832.jpg not processed
+INFO: Processing 84101b3b-5a4e-52f2-a825-05a5d249ddd4.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/84101b3b-5a4e-52f2-a825-05a5d249ddd4.jpg not processed
+INFO: Processing 2c9a9381-e37f-5bfd-b68d-1ac856e36c53.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2c9a9381-e37f-5bfd-b68d-1ac856e36c53.jpg not processed
+INFO: Processing e8e9a45e-c9d3-5bee-b6fe-97b343216e0e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e8e9a45e-c9d3-5bee-b6fe-97b343216e0e.jpg not processed
+INFO: Processing c27aaceb-9f54-51f3-8be7-9f6b308d3495.jpg
+INFO: Shrink object sports ball
+INFO: Processed 43/3559 images
+INFO: Processing 7cb1b379-8174-5c9a-9021-04fe27634ce1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7cb1b379-8174-5c9a-9021-04fe27634ce1.jpg not processed
+INFO: Processing 05277442-70b4-55c6-a6f1-ce797963d9b7.jpg
+INFO: Shrink object car
+INFO: Processed 44/3559 images
+INFO: Processing 790cbc1b-0f2b-5013-9352-ad68a38f04c7.jpg
+INFO: Enlarge object sports ball
+INFO: Processed 45/3559 images
+INFO: Processing 5516bf20-87ee-5de4-a1a1-283e81988dba.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5516bf20-87ee-5de4-a1a1-283e81988dba.jpg not processed
+INFO: Processing 622e0fe2-a02a-5bb4-b0a6-a8e789b70260.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/622e0fe2-a02a-5bb4-b0a6-a8e789b70260.jpg not processed
+INFO: Processing 0a01909a-15ff-50ff-bef8-00903a4b0d1d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0a01909a-15ff-50ff-bef8-00903a4b0d1d.jpg not processed
+INFO: Processing 71f74926-d4d1-5e6e-ab06-9c2f2c546b54.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/71f74926-d4d1-5e6e-ab06-9c2f2c546b54.jpg not processed
+INFO: Processing 193af2bb-df6f-5ee6-a070-4434b353dac3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/193af2bb-df6f-5ee6-a070-4434b353dac3.jpg not processed
+INFO: Processing ce7c382e-ec93-57e2-9c34-f01a16e1c520.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ce7c382e-ec93-57e2-9c34-f01a16e1c520.jpg not processed
+INFO: Processing 528c707b-4bf8-54ce-aa6e-09d6a9c011f5.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/528c707b-4bf8-54ce-aa6e-09d6a9c011f5.jpg not processed
+INFO: Processing 9df9dd99-6c18-5fe9-ad89-8398cab66154.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9df9dd99-6c18-5fe9-ad89-8398cab66154.jpg not processed
+INFO: Processing 92af6013-0377-54f5-ae7e-fefe2f2e349f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/92af6013-0377-54f5-ae7e-fefe2f2e349f.jpg not processed
+INFO: Processing c9898026-d5d6-5aaa-8964-d98e07f74e6a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c9898026-d5d6-5aaa-8964-d98e07f74e6a.jpg not processed
+INFO: Processing 81c437f5-5428-5793-b0f8-611d1a2507f7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/81c437f5-5428-5793-b0f8-611d1a2507f7.jpg not processed
+INFO: Processing 22ead112-1a4b-5b8d-ad28-8b65d2294c95.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/22ead112-1a4b-5b8d-ad28-8b65d2294c95.jpg not processed
+INFO: Processing 4d18399b-b3e2-5de6-95a8-2917758ff919.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4d18399b-b3e2-5de6-95a8-2917758ff919.jpg not processed
+INFO: Processing ac1ae2fa-a39d-562b-9396-f4373b38eb5c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ac1ae2fa-a39d-562b-9396-f4373b38eb5c.jpg not processed
+INFO: Processing f91ba000-f947-52eb-942e-489717574109.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f91ba000-f947-52eb-942e-489717574109.jpg not processed
+INFO: Processing e863e40d-0798-5675-95fb-75d6ba7ebd13.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e863e40d-0798-5675-95fb-75d6ba7ebd13.jpg not processed
+INFO: Processing 9c3663c8-3834-5b62-aeda-813623f1175c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9c3663c8-3834-5b62-aeda-813623f1175c.jpg not processed
+INFO: Processing 4264a767-977e-5fee-ae32-757bc8a173a6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4264a767-977e-5fee-ae32-757bc8a173a6.jpg not processed
+INFO: Processing 873ca603-6639-54db-9d81-be86525480e0.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/873ca603-6639-54db-9d81-be86525480e0.jpg not processed
+INFO: Processing 5cbb0524-dc22-537d-b809-4dc0cc90fb84.jpg
+INFO: Enlarge object sports ball
+INFO: Processed 46/3559 images
+INFO: Processing 4397e06b-bb4a-3fbf-89f3-58b07071fb3e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4397e06b-bb4a-3fbf-89f3-58b07071fb3e.jpg not processed
+INFO: Processing 695e99d6-d114-5dff-8333-47305befe1d5.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/695e99d6-d114-5dff-8333-47305befe1d5.jpg not processed
+INFO: Processing a4a71491-a570-522c-ae21-e6ac664bf660.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a4a71491-a570-522c-ae21-e6ac664bf660.jpg not processed
+INFO: Processing 499008e4-1860-5665-b909-b4120ac49141.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/499008e4-1860-5665-b909-b4120ac49141.jpg not processed
+INFO: Processing f6c50a0d-36c2-30b0-a5a3-8189af920d66.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f6c50a0d-36c2-30b0-a5a3-8189af920d66.jpg not processed
+INFO: Processing 7f63d96e-8277-5f45-add1-3f3e1cf27f2f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7f63d96e-8277-5f45-add1-3f3e1cf27f2f.jpg not processed
+INFO: Processing fabc956a-eb84-5a71-8371-aeebb490e124.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/fabc956a-eb84-5a71-8371-aeebb490e124.jpg not processed
+INFO: Processing ec359157-5f23-5206-8d5c-7cce2b304e68.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ec359157-5f23-5206-8d5c-7cce2b304e68.jpg not processed
+INFO: Processing d4f69f72-e3d9-5327-b975-54d4f99dee1c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d4f69f72-e3d9-5327-b975-54d4f99dee1c.jpg not processed
+INFO: Processing 9c374dc9-5b04-527c-8693-c9d4b0381ddd.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9c374dc9-5b04-527c-8693-c9d4b0381ddd.jpg not processed
+INFO: Processing 4f0ed41c-7a7d-5d6b-bfa2-6052ed78fe11.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4f0ed41c-7a7d-5d6b-bfa2-6052ed78fe11.jpg not processed
+INFO: Processing eeaeeca2-ddfa-5593-99e4-b4d3dc349934.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/eeaeeca2-ddfa-5593-99e4-b4d3dc349934.jpg not processed
+INFO: Processing a783f820-c373-59c8-aaaf-34e2519db66c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a783f820-c373-59c8-aaaf-34e2519db66c.jpg not processed
+INFO: Processing a0d26d99-acae-5fc6-a1dc-7965e8fe2ec9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a0d26d99-acae-5fc6-a1dc-7965e8fe2ec9.jpg not processed
+INFO: Processing 35004d12-c50d-524b-84a7-befbf5ed7b87.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/35004d12-c50d-524b-84a7-befbf5ed7b87.jpg not processed
+INFO: Processing 58765452-139b-5f5c-9063-ffb503d52833.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/58765452-139b-5f5c-9063-ffb503d52833.jpg not processed
+INFO: Processing efbfd39a-a2d2-50ec-81aa-c5c95b25e2a2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/efbfd39a-a2d2-50ec-81aa-c5c95b25e2a2.jpg not processed
+INFO: Processing 5a3f345d-e92f-5bd9-b3ef-770db8cbddaf.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5a3f345d-e92f-5bd9-b3ef-770db8cbddaf.jpg not processed
+INFO: Processing 82ded54d-173a-5376-9263-8846ea13a635.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/82ded54d-173a-5376-9263-8846ea13a635.jpg not processed
+INFO: Processing d6fb85b9-6cb3-525f-b31b-77748a45e3bb.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d6fb85b9-6cb3-525f-b31b-77748a45e3bb.jpg not processed
+INFO: Processing 33ffed4f-fdbd-5f27-847f-132ca1a06784.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/33ffed4f-fdbd-5f27-847f-132ca1a06784.jpg not processed
+INFO: Processing 6ad9fb21-5bf3-5198-b55d-2a42a606d332.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6ad9fb21-5bf3-5198-b55d-2a42a606d332.jpg not processed
+INFO: Processing d2aa06d2-6b6c-538c-afef-8c5508638664.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d2aa06d2-6b6c-538c-afef-8c5508638664.jpg not processed
+INFO: Processing 5a40f112-423c-5a24-97ff-ecccb2bb36d3.jpg
+INFO: Shrink object sports ball
+INFO: Processed 47/3559 images
+INFO: Processing e5c8aed7-57ee-50c0-9d55-7f62235bc9da.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e5c8aed7-57ee-50c0-9d55-7f62235bc9da.jpg not processed
+INFO: Processing 46879620-632a-5226-976b-52268e43a348.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/46879620-632a-5226-976b-52268e43a348.jpg not processed
+INFO: Processing ed16ccfc-1be7-4a7c-8f31-2f25f14559b8.jpg
+INFO: Shrink object sports ball
+INFO: Processed 48/3559 images
+INFO: Processing c5b5e0e3-0c52-52db-a840-9de5438c7d1b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c5b5e0e3-0c52-52db-a840-9de5438c7d1b.jpg not processed
+INFO: Processing adebd065-f3cd-53ce-9c00-47f3d0484e19.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/adebd065-f3cd-53ce-9c00-47f3d0484e19.jpg not processed
+INFO: Processing 967f26e1-bc51-5e44-9daf-6227942ca171.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/967f26e1-bc51-5e44-9daf-6227942ca171.jpg not processed
+INFO: Processing 297569de-f9bc-5bf8-ae99-2382a4d44979.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/297569de-f9bc-5bf8-ae99-2382a4d44979.jpg not processed
+INFO: Processing 3369bead-b851-5e57-969c-2478de018de3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3369bead-b851-5e57-969c-2478de018de3.jpg not processed
+INFO: Processing 533d22a6-467c-5bb9-937a-5f1d813be2ac.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/533d22a6-467c-5bb9-937a-5f1d813be2ac.jpg not processed
+INFO: Processing 5dfe45e7-c4e4-51c1-be59-0b3db774b006.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5dfe45e7-c4e4-51c1-be59-0b3db774b006.jpg not processed
+INFO: Processing d037ca13-309b-5dcb-8970-d8056a14e6cc.jpg
+INFO: Shrink object potted plant
+INFO: Processed 49/3559 images
+INFO: Processing 6331834c-0623-5d0e-ba60-651c427291ba.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6331834c-0623-5d0e-ba60-651c427291ba.jpg not processed
+INFO: Processing 1c2bbe94-40bb-5ede-866b-5b6f07c389aa.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1c2bbe94-40bb-5ede-866b-5b6f07c389aa.jpg not processed
+INFO: Processing 4aea9d8e-e2f0-56c3-a685-ee1f22c83494.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4aea9d8e-e2f0-56c3-a685-ee1f22c83494.jpg not processed
+INFO: Processing c7cc4276-42bd-589f-9923-f503585bcf15.jpg
+INFO: Enlarge object wine glass
+INFO: Processed 50/3559 images
+INFO: Processing 7518a985-f17a-557c-bcb6-033605aaf7c1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7518a985-f17a-557c-bcb6-033605aaf7c1.jpg not processed
+INFO: Processing 7da0431e-a111-5dcb-bada-9ee64cafe23c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7da0431e-a111-5dcb-bada-9ee64cafe23c.jpg not processed
+INFO: Processing d4dfbf77-86bd-5eed-abff-ceb2e1137439.jpg
+INFO: Shrink object handbag
+INFO: Processed 51/3559 images
+INFO: Processing 7ac57961-1da2-5592-8705-f09f9ebdb86b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7ac57961-1da2-5592-8705-f09f9ebdb86b.jpg not processed
+INFO: Processing 1f21d607-7b42-56ae-84b2-b1b151f8c77b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1f21d607-7b42-56ae-84b2-b1b151f8c77b.jpg not processed
+INFO: Processing 54797b2d-9889-5bb9-a271-352e24f7d7ef.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/54797b2d-9889-5bb9-a271-352e24f7d7ef.jpg not processed
+INFO: Processing 25506243-c4be-557f-9268-84f68031f7ff.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/25506243-c4be-557f-9268-84f68031f7ff.jpg not processed
+INFO: Processing 6e37d14e-ddf4-5b97-94d9-1e019726328a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6e37d14e-ddf4-5b97-94d9-1e019726328a.jpg not processed
+INFO: Processing f8906390-7baf-5bf2-9e8e-440ad8d5340b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f8906390-7baf-5bf2-9e8e-440ad8d5340b.jpg not processed
+INFO: Processing 5314b6de-ac5f-5dbd-9276-fdd3bf1d7ab1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5314b6de-ac5f-5dbd-9276-fdd3bf1d7ab1.jpg not processed
+INFO: Processing 87c0b1d0-b63e-572b-bea0-d2b6bec0ee24.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/87c0b1d0-b63e-572b-bea0-d2b6bec0ee24.jpg not processed
+INFO: Processing f44c1ee8-1dc7-5e13-9f4d-a60760e55873.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f44c1ee8-1dc7-5e13-9f4d-a60760e55873.jpg not processed
+INFO: Processing ed8fa67a-fc33-5c0f-b2a9-d80771d7cf0a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ed8fa67a-fc33-5c0f-b2a9-d80771d7cf0a.jpg not processed
+INFO: Processing b0ab08b1-e81b-4c75-8f98-23175a2a0ec8.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b0ab08b1-e81b-4c75-8f98-23175a2a0ec8.jpg not processed
+INFO: Processing 0eedfe50-dcd1-52ea-9f26-22d03aefb14b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0eedfe50-dcd1-52ea-9f26-22d03aefb14b.jpg not processed
+INFO: Processing 0fdcb939-69f2-54bc-9ace-5f931706c475.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0fdcb939-69f2-54bc-9ace-5f931706c475.jpg not processed
+INFO: Processing f8d9e0c4-4132-5464-8a0c-1e5e8fab83f0.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f8d9e0c4-4132-5464-8a0c-1e5e8fab83f0.jpg not processed
+INFO: Processing cb9c0fef-94cc-588a-bfd7-a10a55bb5390.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cb9c0fef-94cc-588a-bfd7-a10a55bb5390.jpg not processed
+INFO: Processing 05392b4f-ab5a-541c-b445-74605f4ccc43.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/05392b4f-ab5a-541c-b445-74605f4ccc43.jpg not processed
+INFO: Processing 61188504-a463-5940-88de-f312a1ab26dc.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/61188504-a463-5940-88de-f312a1ab26dc.jpg not processed
+INFO: Processing 880fc8e8-cbf9-53a3-908c-7056745ea2c0.jpg
+INFO: Shrink object chair
+INFO: Shrink object bench
+INFO: Processed 52/3559 images
+INFO: Processing 0ec7538d-0010-552c-925e-0126c0f2395f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0ec7538d-0010-552c-925e-0126c0f2395f.jpg not processed
+INFO: Processing 01ba096b-11c5-51d6-adb0-0ba0a1cbe2c7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/01ba096b-11c5-51d6-adb0-0ba0a1cbe2c7.jpg not processed
+INFO: Processing 444cd5a8-08f2-54d9-85d7-4fab0aeda886.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/444cd5a8-08f2-54d9-85d7-4fab0aeda886.jpg not processed
+INFO: Processing 0feb5325-3e76-377a-a552-b1cb45164025.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0feb5325-3e76-377a-a552-b1cb45164025.jpg not processed
+INFO: Processing 3f403d2c-4e62-5fbe-96db-b3b99f8dac29.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3f403d2c-4e62-5fbe-96db-b3b99f8dac29.jpg not processed
+INFO: Processing 63e5f8fe-a2c4-55c1-98cd-7b227675171a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/63e5f8fe-a2c4-55c1-98cd-7b227675171a.jpg not processed
+INFO: Processing 6d6235bf-8907-5076-a92a-186f5ca1cb58.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6d6235bf-8907-5076-a92a-186f5ca1cb58.jpg not processed
+INFO: Processing 68f84e5c-b2b3-5e47-9f02-87fa6bd02d54.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/68f84e5c-b2b3-5e47-9f02-87fa6bd02d54.jpg not processed
+INFO: Processing 720a8f5a-e5d8-50f7-abc3-74b00589bc20.jpg
+INFO: Enlarge object bottle
+INFO: Processed 53/3559 images
+INFO: Processing bbdff78f-e994-552d-859e-6e7168a4ba51.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bbdff78f-e994-552d-859e-6e7168a4ba51.jpg not processed
+INFO: Processing bb50761d-e01c-5d4c-8e0e-7d7a643ef5be.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bb50761d-e01c-5d4c-8e0e-7d7a643ef5be.jpg not processed
+INFO: Processing 27eb89e2-349f-5a2a-a342-907fe53ccf36.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/27eb89e2-349f-5a2a-a342-907fe53ccf36.jpg not processed
+INFO: Processing dbdbefe7-5a1c-5fdc-98f6-b9dd54b5c73e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/dbdbefe7-5a1c-5fdc-98f6-b9dd54b5c73e.jpg not processed
+INFO: Processing c4d931b2-dd7c-57f5-8221-b0a3b36a205a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c4d931b2-dd7c-57f5-8221-b0a3b36a205a.jpg not processed
+INFO: Processing 087a68a4-89a7-5c29-a71e-b8eb1f171001.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/087a68a4-89a7-5c29-a71e-b8eb1f171001.jpg not processed
+INFO: Processing 79b222ea-b380-572e-9a86-a705d59f7e8f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/79b222ea-b380-572e-9a86-a705d59f7e8f.jpg not processed
+INFO: Processing 9c869626-603e-53d4-bffd-109c31c6023d.jpg
+INFO: Enlarge object truck
+INFO: Processed 54/3559 images
+INFO: Processing 9c06562b-66a9-58a1-8805-f0bf833af9f4.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9c06562b-66a9-58a1-8805-f0bf833af9f4.jpg not processed
+INFO: Processing 9a20dcaa-0f67-5201-97ae-4863760dffa3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9a20dcaa-0f67-5201-97ae-4863760dffa3.jpg not processed
+INFO: Processing 3d9f5e56-a57d-5cfb-8f8e-29b252fb3c7a.jpg
+INFO: Shrink object tennis racket
+INFO: Shrink object sports ball
+INFO: Processed 55/3559 images
+INFO: Processing bb32eb35-0045-5d89-b77a-71f34770d198.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bb32eb35-0045-5d89-b77a-71f34770d198.jpg not processed
+INFO: Processing 3ea7bf29-6197-54da-bd50-72e3c5b1cf3c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3ea7bf29-6197-54da-bd50-72e3c5b1cf3c.jpg not processed
+INFO: Processing 77e7610b-56fd-56fe-bdea-df1e07284ae9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/77e7610b-56fd-56fe-bdea-df1e07284ae9.jpg not processed
+INFO: Processing 54e22a68-a9f3-56d0-9dae-38d28891713e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/54e22a68-a9f3-56d0-9dae-38d28891713e.jpg not processed
+INFO: Processing 62bf37af-5a63-50df-9e5a-11ec0e5ef67c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/62bf37af-5a63-50df-9e5a-11ec0e5ef67c.jpg not processed
+INFO: Processing be682a4c-d421-5112-a29c-a0581c441a86.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/be682a4c-d421-5112-a29c-a0581c441a86.jpg not processed
+INFO: Processing 11ac759e-ad60-52e2-91f8-25a56649e1d4.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/11ac759e-ad60-52e2-91f8-25a56649e1d4.jpg not processed
+INFO: Processing 4105dbc1-827f-5bf7-bf35-2a05f63b60cc.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4105dbc1-827f-5bf7-bf35-2a05f63b60cc.jpg not processed
+INFO: Processing d18980a2-ab61-5bbf-bb9a-11823378594f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d18980a2-ab61-5bbf-bb9a-11823378594f.jpg not processed
+INFO: Processing 1a61ae59-3f37-5fed-93fd-95110973e126.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1a61ae59-3f37-5fed-93fd-95110973e126.jpg not processed
+INFO: Processing dc3079eb-1b69-5e59-8359-a9baaf033950.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/dc3079eb-1b69-5e59-8359-a9baaf033950.jpg not processed
+INFO: Processing 927f9755-7499-53f6-a424-2061c7ce6188.jpg
+INFO: Shrink object sports ball
+INFO: Processed 56/3559 images
+INFO: Processing 2a41caf0-5022-5b9e-a534-a025f2b43a55.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2a41caf0-5022-5b9e-a534-a025f2b43a55.jpg not processed
+INFO: Processing 4e6f9a29-7a77-5a72-bd5e-54beff2f8f57.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4e6f9a29-7a77-5a72-bd5e-54beff2f8f57.jpg not processed
+INFO: Processing f4990ae2-a76a-5f01-945d-ca1d82fed9c7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f4990ae2-a76a-5f01-945d-ca1d82fed9c7.jpg not processed
+INFO: Processing d4d14850-32b1-55ea-bacb-ef04d81842d5.jpg
+INFO: Shrink object sports ball
+INFO: Processed 57/3559 images
+INFO: Processing a59b8380-e44f-5248-b72d-71d15b5b340d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a59b8380-e44f-5248-b72d-71d15b5b340d.jpg not processed
+INFO: Processing 86a0d5c0-aece-5a96-aca9-a1aa7d531337.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/86a0d5c0-aece-5a96-aca9-a1aa7d531337.jpg not processed
+INFO: Processing ecd3cc3b-37c8-5479-bb64-fca6fa1858a5.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ecd3cc3b-37c8-5479-bb64-fca6fa1858a5.jpg not processed
+INFO: Processing e0fa750b-d2da-59f6-961e-3123f0916b41.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e0fa750b-d2da-59f6-961e-3123f0916b41.jpg not processed
+INFO: Processing 1ca03173-02f6-5458-a849-76eb9d81480f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1ca03173-02f6-5458-a849-76eb9d81480f.jpg not processed
+INFO: Processing c697a8ed-32d5-538c-b27b-1892a7b345ac.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c697a8ed-32d5-538c-b27b-1892a7b345ac.jpg not processed
+INFO: Processing b08897a2-7f89-5fe3-a79f-aae7afcd4fb7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b08897a2-7f89-5fe3-a79f-aae7afcd4fb7.jpg not processed
+INFO: Processing effff707-9249-5119-9386-d599ed7918cc.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/effff707-9249-5119-9386-d599ed7918cc.jpg not processed
+INFO: Processing ce3046df-7278-5691-8add-c43b41a3ecda.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ce3046df-7278-5691-8add-c43b41a3ecda.jpg not processed
+INFO: Processing d2ff9dc6-dda7-5f23-9ee0-0259f77652bc.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d2ff9dc6-dda7-5f23-9ee0-0259f77652bc.jpg not processed
+INFO: Processing 3da3b5ba-2d61-5671-a4f4-4c0fdfe7bc33.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3da3b5ba-2d61-5671-a4f4-4c0fdfe7bc33.jpg not processed
+INFO: Processing f814fa8c-e4ae-5b39-ac13-e133ccd626f0.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f814fa8c-e4ae-5b39-ac13-e133ccd626f0.jpg not processed
+INFO: Processing ad2f6578-b596-5576-8e12-63728bf6a8d0.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ad2f6578-b596-5576-8e12-63728bf6a8d0.jpg not processed
+INFO: Processing 0e60cb40-f584-5398-a745-58bdbbf8a098.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0e60cb40-f584-5398-a745-58bdbbf8a098.jpg not processed
+INFO: Processing 2ceea5d9-354e-5551-87ad-ece883c739f7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2ceea5d9-354e-5551-87ad-ece883c739f7.jpg not processed
+INFO: Processing 3488bb11-3876-5539-ac8e-4b71e45ae2db.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3488bb11-3876-5539-ac8e-4b71e45ae2db.jpg not processed
+INFO: Processing 299db2a3-5545-57f2-99c9-8dd171b4b0c8.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/299db2a3-5545-57f2-99c9-8dd171b4b0c8.jpg not processed
+INFO: Processing 8b30a320-3239-5bc3-a6f4-6101eca9377c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8b30a320-3239-5bc3-a6f4-6101eca9377c.jpg not processed
+INFO: Processing 12dc3c23-d8ac-536f-a092-c0eb854ae9dc.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/12dc3c23-d8ac-536f-a092-c0eb854ae9dc.jpg not processed
+INFO: Processing 3763ba2a-a399-584b-833b-3f517fb4c306.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3763ba2a-a399-584b-833b-3f517fb4c306.jpg not processed
+INFO: Processing 8318c795-bd3e-5eef-b462-a0a1ce6965a2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8318c795-bd3e-5eef-b462-a0a1ce6965a2.jpg not processed
+INFO: Processing 74b60ecd-a367-5969-8c5e-4ea14e69a850.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/74b60ecd-a367-5969-8c5e-4ea14e69a850.jpg not processed
+INFO: Processing e5e9955b-191e-5a7e-8d38-b5d9ce61206b.jpg
+INFO: Enlarge object handbag
+INFO: Processed 58/3559 images
+INFO: Processing a761251c-b62d-59b9-b594-8f0a31aa8182.jpg
+INFO: Shrink object chair
+INFO: Processed 59/3559 images
+INFO: Processing eb1f4d70-7b50-5ccc-ae59-d815bfc50cf1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/eb1f4d70-7b50-5ccc-ae59-d815bfc50cf1.jpg not processed
+INFO: Processing bf2804c4-1798-594b-aaca-4e181795bf7a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bf2804c4-1798-594b-aaca-4e181795bf7a.jpg not processed
+INFO: Processing bdec2452-0552-5dde-baa5-911c63ef6803.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bdec2452-0552-5dde-baa5-911c63ef6803.jpg not processed
+INFO: Processing 9c7495e9-e62b-55a2-8e88-74e5269ddb3d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9c7495e9-e62b-55a2-8e88-74e5269ddb3d.jpg not processed
+INFO: Processing f168becb-2693-570f-b414-aa49b854fc92.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f168becb-2693-570f-b414-aa49b854fc92.jpg not processed
+INFO: Processing ba12bf2e-ece9-5d36-b559-01f06a2d826d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ba12bf2e-ece9-5d36-b559-01f06a2d826d.jpg not processed
+INFO: Processing 2446436a-fdc6-5103-bbf2-99cd42e77671.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2446436a-fdc6-5103-bbf2-99cd42e77671.jpg not processed
+INFO: Processing 6f394fc0-1235-5aa4-b940-54587e10bdf9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6f394fc0-1235-5aa4-b940-54587e10bdf9.jpg not processed
+INFO: Processing 49d56bdf-a825-518e-9cf0-65f962b48db7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/49d56bdf-a825-518e-9cf0-65f962b48db7.jpg not processed
+INFO: Processing 606af603-0a14-5428-afc8-a4211f0452b6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/606af603-0a14-5428-afc8-a4211f0452b6.jpg not processed
+INFO: Processing cfc1a47d-e039-5f1b-a105-75d051d75777.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cfc1a47d-e039-5f1b-a105-75d051d75777.jpg not processed
+INFO: Processing 847041b0-b71e-51d0-90e8-656c5acf4824.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/847041b0-b71e-51d0-90e8-656c5acf4824.jpg not processed
+INFO: Processing c78aa689-97bd-5101-bae8-5e281e89e95a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c78aa689-97bd-5101-bae8-5e281e89e95a.jpg not processed
+INFO: Processing b980a072-cc0b-3507-b245-61503b7c84e0.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b980a072-cc0b-3507-b245-61503b7c84e0.jpg not processed
+INFO: Processing 56cf7942-69dc-5f53-ae6a-709924b28d93.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/56cf7942-69dc-5f53-ae6a-709924b28d93.jpg not processed
+INFO: Processing 76ac9c3d-4df4-539c-a968-0354581a40bf.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/76ac9c3d-4df4-539c-a968-0354581a40bf.jpg not processed
+INFO: Processing c1d5f052-74fa-5f88-aeb6-c1cae44c5fb0.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c1d5f052-74fa-5f88-aeb6-c1cae44c5fb0.jpg not processed
+INFO: Processing 6f45ac77-3e9b-5429-835a-dd999d78c6d4.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6f45ac77-3e9b-5429-835a-dd999d78c6d4.jpg not processed
+INFO: Processing eaa5fe44-f6ff-538f-bb77-7f34abfd5003.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/eaa5fe44-f6ff-538f-bb77-7f34abfd5003.jpg not processed
+INFO: Processing bec26049-de0f-5428-8e19-7cc98ae8f1c3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bec26049-de0f-5428-8e19-7cc98ae8f1c3.jpg not processed
+INFO: Processing c2c27aef-b836-52cc-8305-5a5f054d40e9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c2c27aef-b836-52cc-8305-5a5f054d40e9.jpg not processed
+INFO: Processing 6e3ab5a2-9280-5416-8a99-e90de32cd539.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6e3ab5a2-9280-5416-8a99-e90de32cd539.jpg not processed
+INFO: Processing f92024b6-8eff-5373-904b-e270b7969800.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f92024b6-8eff-5373-904b-e270b7969800.jpg not processed
+INFO: Processing 214524c6-2f8c-5616-bd77-bfb52b2ae175.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/214524c6-2f8c-5616-bd77-bfb52b2ae175.jpg not processed
+INFO: Processing 2b302520-df00-5098-a6e1-0b39e337da23.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2b302520-df00-5098-a6e1-0b39e337da23.jpg not processed
+INFO: Processing d2d41e52-54df-500f-b73c-eba00a19ca95.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d2d41e52-54df-500f-b73c-eba00a19ca95.jpg not processed
+INFO: Processing f6dad8ed-25c3-5230-a3cd-94c394e555e5.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f6dad8ed-25c3-5230-a3cd-94c394e555e5.jpg not processed
+INFO: Processing 7c2fe2b9-34ad-5469-9f80-f16a2e873b44.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7c2fe2b9-34ad-5469-9f80-f16a2e873b44.jpg not processed
+INFO: Processing b4469b74-cdd4-5854-93ec-414a5139c2f8.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b4469b74-cdd4-5854-93ec-414a5139c2f8.jpg not processed
+INFO: Processing 0288b518-bcc9-51c1-a5ab-306c85fe8975.jpg
+INFO: Enlarge object chair
+INFO: Processed 60/3559 images
+INFO: Processing 015fa09e-5ffc-5f9d-bae0-13aee5fcb5c3.jpg
+INFO: Shrink object car
+INFO: Processed 61/3559 images
+INFO: Processing 48c3a369-2633-5a08-956b-ed473ac367ff.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/48c3a369-2633-5a08-956b-ed473ac367ff.jpg not processed
+INFO: Processing 75ea04c8-8943-544a-bfbf-998c2a6bfb43.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/75ea04c8-8943-544a-bfbf-998c2a6bfb43.jpg not processed
+INFO: Processing 53381795-9414-57e6-b737-aa75d370bfd7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/53381795-9414-57e6-b737-aa75d370bfd7.jpg not processed
+INFO: Processing 4380f3d2-5abd-5c77-ab35-72f2e149d3ae.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4380f3d2-5abd-5c77-ab35-72f2e149d3ae.jpg not processed
+INFO: Processing e3dcd007-e04c-5423-bd93-0193574d93fb.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e3dcd007-e04c-5423-bd93-0193574d93fb.jpg not processed
+INFO: Processing 8a43cc40-9935-5781-a9ac-6a3d554bcf13.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8a43cc40-9935-5781-a9ac-6a3d554bcf13.jpg not processed
+INFO: Processing 08bc7ed4-a21a-5d66-a827-aee888bb14fd.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/08bc7ed4-a21a-5d66-a827-aee888bb14fd.jpg not processed
+INFO: Processing a95f3acb-cdb2-52c5-8e63-d8198f454dad.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a95f3acb-cdb2-52c5-8e63-d8198f454dad.jpg not processed
+INFO: Processing 7eca4419-f6d1-598e-94db-4ca526200878.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7eca4419-f6d1-598e-94db-4ca526200878.jpg not processed
+INFO: Processing 5b6a0ac4-01c9-5973-8d67-f2b16ff9fbe8.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5b6a0ac4-01c9-5973-8d67-f2b16ff9fbe8.jpg not processed
+INFO: Processing 5e66685e-eb2b-5eb0-a046-31df3a50b952.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5e66685e-eb2b-5eb0-a046-31df3a50b952.jpg not processed
+INFO: Processing ed80a254-78b5-5ccc-8bef-588b2920297c.jpg
+INFO: Shrink object surfboard
+INFO: Processed 62/3559 images
+INFO: Processing d7f2f598-cf19-57b4-86ea-bc155533434e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d7f2f598-cf19-57b4-86ea-bc155533434e.jpg not processed
+INFO: Processing d6aa8fe5-49f2-5949-8d86-653ad3c20395.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d6aa8fe5-49f2-5949-8d86-653ad3c20395.jpg not processed
+INFO: Processing 75cd1594-6563-5533-a5d0-6aa7d29939d6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/75cd1594-6563-5533-a5d0-6aa7d29939d6.jpg not processed
+INFO: Processing 2c179124-6a87-547d-9528-97596d63a414.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2c179124-6a87-547d-9528-97596d63a414.jpg not processed
+INFO: Processing 0dc8ff3a-5495-5df1-bad2-c4eb914ad139.jpg
+INFO: Shrink object teddy bear
+INFO: Processed 63/3559 images
+INFO: Processing cc8ef6fa-d0e3-5f85-ba72-a71799bbd8d7.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cc8ef6fa-d0e3-5f85-ba72-a71799bbd8d7.jpg not processed
+INFO: Processing 8d8c27cd-1662-5d7a-84d5-f183530351ad.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8d8c27cd-1662-5d7a-84d5-f183530351ad.jpg not processed
+INFO: Processing 4299853b-fa3c-5375-960e-246e4b661502.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4299853b-fa3c-5375-960e-246e4b661502.jpg not processed
+INFO: Processing 954734d4-7017-5efd-b3a7-029c87a9c87c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/954734d4-7017-5efd-b3a7-029c87a9c87c.jpg not processed
+INFO: Processing 055fe384-9e79-5352-b626-3f635bfb7709.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/055fe384-9e79-5352-b626-3f635bfb7709.jpg not processed
+INFO: Processing b30a0f8f-3d07-5b48-a7d4-5ea6afe6b44f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b30a0f8f-3d07-5b48-a7d4-5ea6afe6b44f.jpg not processed
+INFO: Processing 1db376dc-2a01-54bb-947f-e447fa20e692.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1db376dc-2a01-54bb-947f-e447fa20e692.jpg not processed
+INFO: Processing 3416aed4-ed92-5a37-8e10-beda6405ad5d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3416aed4-ed92-5a37-8e10-beda6405ad5d.jpg not processed
+INFO: Processing 408f3163-8fe0-5829-a420-6fe801042ecd.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/408f3163-8fe0-5829-a420-6fe801042ecd.jpg not processed
+INFO: Processing 418f942b-5db3-5ce5-895f-02f65edf6199.jpg
+INFO: Shrink object bottle
+INFO: Processed 64/3559 images
+INFO: Processing 73bcd40b-bd34-55f9-b0a0-e1585a0013a9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/73bcd40b-bd34-55f9-b0a0-e1585a0013a9.jpg not processed
+INFO: Processing e5f98453-df0f-55dd-b233-a159c7f6fc33.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e5f98453-df0f-55dd-b233-a159c7f6fc33.jpg not processed
+INFO: Processing 8e3500c7-02ab-53d1-8ed6-897f833328e3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8e3500c7-02ab-53d1-8ed6-897f833328e3.jpg not processed
+INFO: Processing 8b940ad9-38f9-5611-81ca-bfb1ea31708c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8b940ad9-38f9-5611-81ca-bfb1ea31708c.jpg not processed
+INFO: Processing 4a6aa06e-e085-5c7e-881f-6777b0ce9b39.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4a6aa06e-e085-5c7e-881f-6777b0ce9b39.jpg not processed
+INFO: Processing 62ba5103-31f2-5048-bb3e-649f957f6101.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/62ba5103-31f2-5048-bb3e-649f957f6101.jpg not processed
+INFO: Processing b7b7f61e-824f-59ff-9f64-4cbe2138af18.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b7b7f61e-824f-59ff-9f64-4cbe2138af18.jpg not processed
+INFO: Processing 974d9f3e-d467-53f6-92f4-7e47fc293fba.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/974d9f3e-d467-53f6-92f4-7e47fc293fba.jpg not processed
+INFO: Processing 67cdb601-deff-5225-845e-9929e978b76e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/67cdb601-deff-5225-845e-9929e978b76e.jpg not processed
+INFO: Processing 9c7e08ed-9f40-51a2-ba37-276fc9e64325.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9c7e08ed-9f40-51a2-ba37-276fc9e64325.jpg not processed
+INFO: Processing 71d65e15-c8ca-514e-8324-1f15495e2231.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/71d65e15-c8ca-514e-8324-1f15495e2231.jpg not processed
+INFO: Processing b069a595-7e97-5efa-ae00-f7b43bee6ec1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b069a595-7e97-5efa-ae00-f7b43bee6ec1.jpg not processed
+INFO: Processing 967b89fe-8341-5510-b63b-087aef2caf4c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/967b89fe-8341-5510-b63b-087aef2caf4c.jpg not processed
+INFO: Processing 472e9daa-9b9f-53cc-9a70-1adcdfbf4326.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/472e9daa-9b9f-53cc-9a70-1adcdfbf4326.jpg not processed
+INFO: Processing 501aa171-a22d-5431-87b3-aa99281a5a67.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/501aa171-a22d-5431-87b3-aa99281a5a67.jpg not processed
+INFO: Processing 04a901b2-7b2b-5d42-9e4c-501026b08e3d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/04a901b2-7b2b-5d42-9e4c-501026b08e3d.jpg not processed
+INFO: Processing 008af8ab-e28f-5c15-a778-75788b5b7028.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/008af8ab-e28f-5c15-a778-75788b5b7028.jpg not processed
+INFO: Processing 2b06000c-888b-5867-a49c-6b567224e6af.jpg
+INFO: Shrink object sports ball
+INFO: Processed 65/3559 images
+INFO: Processing 586b93a3-a9b8-58b3-a4b1-57767c846ac6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/586b93a3-a9b8-58b3-a4b1-57767c846ac6.jpg not processed
+INFO: Processing 61df6b18-c86d-5486-bce4-beb723147cbb.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/61df6b18-c86d-5486-bce4-beb723147cbb.jpg not processed
+INFO: Processing cb728867-5208-5eb5-bc27-ed4c7313ae27.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cb728867-5208-5eb5-bc27-ed4c7313ae27.jpg not processed
+INFO: Processing ebff1fa6-be0c-5d42-a73d-79d04dcdb751.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ebff1fa6-be0c-5d42-a73d-79d04dcdb751.jpg not processed
+INFO: Processing a4645dc1-4d7d-56ee-b1bb-6c8c84945dfd.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a4645dc1-4d7d-56ee-b1bb-6c8c84945dfd.jpg not processed
+INFO: Processing eba3c206-539b-5099-9807-972698e0b27a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/eba3c206-539b-5099-9807-972698e0b27a.jpg not processed
+INFO: Processing 77ab9b2e-b95d-5627-b1a8-600f0d76b80d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/77ab9b2e-b95d-5627-b1a8-600f0d76b80d.jpg not processed
+INFO: Processing bb42f657-f297-59bb-83ae-3bef1fd13ef5.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bb42f657-f297-59bb-83ae-3bef1fd13ef5.jpg not processed
+INFO: Processing 403f5d2b-9409-50f5-b086-4f4e9e72bfcd.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/403f5d2b-9409-50f5-b086-4f4e9e72bfcd.jpg not processed
+INFO: Processing c382b929-ceaa-5ccd-9c32-b037b5f00c0c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c382b929-ceaa-5ccd-9c32-b037b5f00c0c.jpg not processed
+INFO: Processing 98a0a8cc-a933-5c8b-a82c-3a653911a47f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/98a0a8cc-a933-5c8b-a82c-3a653911a47f.jpg not processed
+INFO: Processing 985b5363-2e9f-542c-ac5a-d80d99541236.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/985b5363-2e9f-542c-ac5a-d80d99541236.jpg not processed
+INFO: Processing a6bcd7ca-d7e7-5f3b-9a25-0f9e367f5d64.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a6bcd7ca-d7e7-5f3b-9a25-0f9e367f5d64.jpg not processed
+INFO: Processing 9aee89f9-3a06-55a7-bdf3-dba24e517fb1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9aee89f9-3a06-55a7-bdf3-dba24e517fb1.jpg not processed
+INFO: Processing 95fe5c19-47a9-56db-86c2-cb084dc30dca.jpg
+INFO: Shrink object bottle
+INFO: Processed 66/3559 images
+INFO: Processing ef55145d-5b5d-5220-ba5a-eb71441f924f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ef55145d-5b5d-5220-ba5a-eb71441f924f.jpg not processed
+INFO: Processing a46f09a9-7b66-5248-b6ad-57320522ec7c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a46f09a9-7b66-5248-b6ad-57320522ec7c.jpg not processed
+INFO: Processing 4ff16418-833c-548e-85bb-03a56ce7b758.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4ff16418-833c-548e-85bb-03a56ce7b758.jpg not processed
+INFO: Processing 13ddb72b-13bd-545f-ada4-455616abaa75.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/13ddb72b-13bd-545f-ada4-455616abaa75.jpg not processed
+INFO: Processing 9c250bbe-1e73-58e6-87c7-952a0c4977cf.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9c250bbe-1e73-58e6-87c7-952a0c4977cf.jpg not processed
+INFO: Processing 05e7ba35-5819-5d0b-a07a-40c6392aee43.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/05e7ba35-5819-5d0b-a07a-40c6392aee43.jpg not processed
+INFO: Processing f939e0ce-b48d-5c78-8c92-b9331b5a63ea.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f939e0ce-b48d-5c78-8c92-b9331b5a63ea.jpg not processed
+INFO: Processing 9d63ac09-fbf2-5e7b-858a-30848bdd07b5.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9d63ac09-fbf2-5e7b-858a-30848bdd07b5.jpg not processed
+INFO: Processing 7f175ee7-763d-54f0-97f8-7e9f94addb57.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7f175ee7-763d-54f0-97f8-7e9f94addb57.jpg not processed
+INFO: Processing 077df96b-3b6f-5a36-9cba-e6dc7dbd9e78.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/077df96b-3b6f-5a36-9cba-e6dc7dbd9e78.jpg not processed
+INFO: Processing 5e9e2eb2-bfd9-50c3-959a-f8796eb970a5.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5e9e2eb2-bfd9-50c3-959a-f8796eb970a5.jpg not processed
+INFO: Processing 671a4a72-ffe0-572c-8340-953220f5b9bc.jpg
+INFO: Enlarge object sports ball
+INFO: Processed 67/3559 images
+INFO: Processing 1f7f488b-20ac-5159-a5f4-8b60081b1376.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1f7f488b-20ac-5159-a5f4-8b60081b1376.jpg not processed
+INFO: Processing cab8ff0c-1e1c-5d2a-af04-a53371b50c7e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cab8ff0c-1e1c-5d2a-af04-a53371b50c7e.jpg not processed
+INFO: Processing 7abf4b3d-231e-53d2-a60e-28b3da28807a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7abf4b3d-231e-53d2-a60e-28b3da28807a.jpg not processed
+INFO: Processing 743c4f4c-f754-5ef7-85c9-6d000986157f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/743c4f4c-f754-5ef7-85c9-6d000986157f.jpg not processed
+INFO: Processing 37aa22ea-90fb-5a03-a46a-0704682bd4e1.jpg
+INFO: Enlarge object sports ball
+INFO: Processed 68/3559 images
+INFO: Processing 5d9ead51-8f63-53d0-8262-f84182d27194.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/5d9ead51-8f63-53d0-8262-f84182d27194.jpg not processed
+INFO: Processing f72eef69-3375-54d7-9814-73e7a5d77021.jpg
+INFO: Shrink object toilet
+INFO: Processed 69/3559 images
+INFO: Processing a0af6bfe-66e0-559b-bf30-d1b596bf673c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a0af6bfe-66e0-559b-bf30-d1b596bf673c.jpg not processed
+INFO: Processing 51f90372-9ab0-539e-849f-2288dd9accaf.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/51f90372-9ab0-539e-849f-2288dd9accaf.jpg not processed
+INFO: Processing dd187ef3-b8e4-55dc-ab7c-8f883ee77d33.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/dd187ef3-b8e4-55dc-ab7c-8f883ee77d33.jpg not processed
+INFO: Processing 82662c56-0f29-56a2-bfd9-b8b35b5c7eec.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/82662c56-0f29-56a2-bfd9-b8b35b5c7eec.jpg not processed
+INFO: Processing 81057c6f-9c87-57e2-8955-641257169960.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/81057c6f-9c87-57e2-8955-641257169960.jpg not processed
+INFO: Processing 21184328-cb16-50c0-a7cb-5a7905953b42.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/21184328-cb16-50c0-a7cb-5a7905953b42.jpg not processed
+INFO: Processing fd3633c8-da68-50a7-a45d-079295e977ea.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/fd3633c8-da68-50a7-a45d-079295e977ea.jpg not processed
+INFO: Processing dc5fa5e0-4833-5fa3-b5fc-23eead6a5a89.jpg
+INFO: Enlarge object bicycle
+INFO: Processed 70/3559 images
+INFO: Processing c0fb5a80-1c01-5fb5-a107-4aa743b95f4e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c0fb5a80-1c01-5fb5-a107-4aa743b95f4e.jpg not processed
+INFO: Processing 12246339-84aa-5339-928e-715f4fc83598.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/12246339-84aa-5339-928e-715f4fc83598.jpg not processed
+INFO: Processing 38e928eb-6922-5126-9590-b6b2529322cb.jpg
+INFO: Enlarge object car
+INFO: Processed 71/3559 images
+INFO: Processing 90b371ec-b211-5ea8-848a-8d19fecbbccc.jpg
+INFO: Enlarge object sports ball
+INFO: Processed 72/3559 images
+INFO: Processing d3db3587-3559-51b5-a829-2670e71e651f.jpg
+INFO: Enlarge object bottle
+INFO: Processed 73/3559 images
+INFO: Processing 9b14791d-4caf-52ce-bf95-2998b8cc2d03.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9b14791d-4caf-52ce-bf95-2998b8cc2d03.jpg not processed
+INFO: Processing 2abd28fd-279c-5985-96bd-2a0d6fcf1b70.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2abd28fd-279c-5985-96bd-2a0d6fcf1b70.jpg not processed
+INFO: Processing 4eb43631-192a-5ff4-9226-729d182f4522.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4eb43631-192a-5ff4-9226-729d182f4522.jpg not processed
+INFO: Processing 819248aa-5294-5302-9d62-95538bcc64f9.jpg
+INFO: Shrink object tv
+INFO: Processed 74/3559 images
+INFO: Processing d4f359d2-70c7-559e-8821-f371e5b35d6d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d4f359d2-70c7-559e-8821-f371e5b35d6d.jpg not processed
+INFO: Processing 91ab7470-54ad-5214-8423-ddf2f00c5fbd.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/91ab7470-54ad-5214-8423-ddf2f00c5fbd.jpg not processed
+INFO: Processing 2d6cb5a4-201f-54e1-908b-bf53d8864e2a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2d6cb5a4-201f-54e1-908b-bf53d8864e2a.jpg not processed
+INFO: Processing 2948081b-bb3b-5ded-ae51-590ff58b0833.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2948081b-bb3b-5ded-ae51-590ff58b0833.jpg not processed
+INFO: Processing b9c8318e-981b-55f5-bad0-8110c59a9ec3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b9c8318e-981b-55f5-bad0-8110c59a9ec3.jpg not processed
+INFO: Processing 37f25cb6-358d-5bb0-a51a-fcb7a769897d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/37f25cb6-358d-5bb0-a51a-fcb7a769897d.jpg not processed
+INFO: Processing 5cf2663e-10c7-5e21-93ac-df1399502b34.jpg
+INFO: Shrink object cell phone
+INFO: Processed 75/3559 images
+INFO: Processing f088bf07-ffdf-5418-817c-37ef4f6efd06.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f088bf07-ffdf-5418-817c-37ef4f6efd06.jpg not processed
+INFO: Processing d55710ee-aa36-5cbf-a044-47a3f02d65a6.jpg
+INFO: Shrink object chair
+INFO: Shrink object potted plant
+INFO: Processed 76/3559 images
+INFO: Processing 74d9e8d3-311b-5051-ba8d-05113dafe07f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/74d9e8d3-311b-5051-ba8d-05113dafe07f.jpg not processed
+INFO: Processing 934d8a04-1247-5b3e-906d-9e4cd2edb2b9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/934d8a04-1247-5b3e-906d-9e4cd2edb2b9.jpg not processed
+INFO: Processing 2afe7bed-e0eb-5ac9-9570-42b03d571bd2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2afe7bed-e0eb-5ac9-9570-42b03d571bd2.jpg not processed
+INFO: Processing 6e25f47a-d4ed-54da-8287-c4049e6cba3a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/6e25f47a-d4ed-54da-8287-c4049e6cba3a.jpg not processed
+INFO: Processing 9b704d8f-eb84-502e-9f3a-a3726bed4889.jpg
+INFO: Enlarge object chair
+INFO: Processed 77/3559 images
+INFO: Processing 8c434ef0-8801-558a-89e1-63df10d73b7a.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8c434ef0-8801-558a-89e1-63df10d73b7a.jpg not processed
+INFO: Processing 2c2457db-80eb-52b0-9b1a-1801eadf51fb.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/2c2457db-80eb-52b0-9b1a-1801eadf51fb.jpg not processed
+INFO: Processing 512d422c-c1d2-5fe8-a9c6-a7471d544a86.jpg
+INFO: Enlarge object laptop
+INFO: Processed 78/3559 images
+INFO: Processing e7fb7fcd-0849-55b3-b09d-0b9aff3f174d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e7fb7fcd-0849-55b3-b09d-0b9aff3f174d.jpg not processed
+INFO: Processing 75b36fd1-1d6b-5302-97c2-8ba80fa5b7dc.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/75b36fd1-1d6b-5302-97c2-8ba80fa5b7dc.jpg not processed
+INFO: Processing f8c0c0bf-1314-5ddb-8718-986328415d82.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/f8c0c0bf-1314-5ddb-8718-986328415d82.jpg not processed
+INFO: Processing d1df52fd-c3fd-59eb-92f0-2c6f800560d6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d1df52fd-c3fd-59eb-92f0-2c6f800560d6.jpg not processed
+INFO: Processing aca48e14-cf58-5095-ac00-a78efdcbd68f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/aca48e14-cf58-5095-ac00-a78efdcbd68f.jpg not processed
+INFO: Processing 0c125e67-13d6-5ddb-b4b9-14f06da3a46f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0c125e67-13d6-5ddb-b4b9-14f06da3a46f.jpg not processed
+INFO: Processing 3d15e6a9-184f-5d96-bcc6-3b09d1edc267.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3d15e6a9-184f-5d96-bcc6-3b09d1edc267.jpg not processed
+INFO: Processing 45cf747d-1a2b-5369-80a6-6232782c74d7.jpg
+INFO: Enlarge object handbag
+INFO: Processed 79/3559 images
+INFO: Processing c42ed5b9-3a20-516f-9ce5-d120f9736d37.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c42ed5b9-3a20-516f-9ce5-d120f9736d37.jpg not processed
+INFO: Processing 0db7f8da-01f4-5127-8954-e084d5609070.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0db7f8da-01f4-5127-8954-e084d5609070.jpg not processed
+INFO: Processing d7ae9b45-c3e1-5354-98e2-8a78dc5a3ea2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d7ae9b45-c3e1-5354-98e2-8a78dc5a3ea2.jpg not processed
+INFO: Processing bb4b810a-a000-5e42-bf2d-a7917da49e30.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/bb4b810a-a000-5e42-bf2d-a7917da49e30.jpg not processed
+INFO: Processing 11a8dab9-9896-5fdc-8d23-c4f86d3e85ee.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/11a8dab9-9896-5fdc-8d23-c4f86d3e85ee.jpg not processed
+INFO: Processing f5349d16-ca30-5196-b65a-0dd7c09a6fb1.jpg
+INFO: Enlarge object sports ball
+INFO: Processed 80/3559 images
+INFO: Processing d33e9467-a156-526c-ac2c-2e46917b1377.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d33e9467-a156-526c-ac2c-2e46917b1377.jpg not processed
+INFO: Processing 4da1dddb-c284-5435-b684-669d94a700b2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4da1dddb-c284-5435-b684-669d94a700b2.jpg not processed
+INFO: Processing 55c8907e-a6fc-5f60-b56c-c65d4a81107f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/55c8907e-a6fc-5f60-b56c-c65d4a81107f.jpg not processed
+INFO: Processing 7377ac17-dbf5-5c6f-98ed-e6dcc9165867.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/7377ac17-dbf5-5c6f-98ed-e6dcc9165867.jpg not processed
+INFO: Processing 022534ab-5298-5367-8613-963fd70c3db2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/022534ab-5298-5367-8613-963fd70c3db2.jpg not processed
+INFO: Processing 76b87639-a455-59c9-9deb-2a3946913fe6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/76b87639-a455-59c9-9deb-2a3946913fe6.jpg not processed
+INFO: Processing e6d39759-2336-550a-b3d2-e2b4cc6864be.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e6d39759-2336-550a-b3d2-e2b4cc6864be.jpg not processed
+INFO: Processing c3c5a581-0eee-559b-9982-9fd0a7e5b7fb.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c3c5a581-0eee-559b-9982-9fd0a7e5b7fb.jpg not processed
+INFO: Processing 13f7722f-370a-5674-ada4-6e0da84ef14f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/13f7722f-370a-5674-ada4-6e0da84ef14f.jpg not processed
+INFO: Processing 736df02c-7631-522e-b78e-653bc78a500e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/736df02c-7631-522e-b78e-653bc78a500e.jpg not processed
+INFO: Processing ca28033d-e17e-5bbc-9245-8b673a7124af.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/ca28033d-e17e-5bbc-9245-8b673a7124af.jpg not processed
+INFO: Processing a8f00cd7-71ab-52f0-a169-bb7b46f2663d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a8f00cd7-71ab-52f0-a169-bb7b46f2663d.jpg not processed
+INFO: Processing 3b820834-0cbe-5336-88b4-12e91a266aa4.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3b820834-0cbe-5336-88b4-12e91a266aa4.jpg not processed
+INFO: Processing 9e022d0d-720d-5710-ba1f-56361d6fc7ba.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/9e022d0d-720d-5710-ba1f-56361d6fc7ba.jpg not processed
+INFO: Processing fdc0d3c7-7083-55cb-9f77-ae2b1a4352ff.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/fdc0d3c7-7083-55cb-9f77-ae2b1a4352ff.jpg not processed
+INFO: Processing d64b0e85-713a-5e5c-bc7c-c48805966716.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/d64b0e85-713a-5e5c-bc7c-c48805966716.jpg not processed
+INFO: Processing 92254439-8325-5f33-898e-df6963e2679b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/92254439-8325-5f33-898e-df6963e2679b.jpg not processed
+INFO: Processing 12941d55-4ef4-5356-9038-020b3ae1c5c2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/12941d55-4ef4-5356-9038-020b3ae1c5c2.jpg not processed
+INFO: Processing 1f5708c3-e665-5040-a395-9ae74ef570de.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/1f5708c3-e665-5040-a395-9ae74ef570de.jpg not processed
+INFO: Processing e020da06-274d-580c-b63e-0fabf5ae4ec3.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/e020da06-274d-580c-b63e-0fabf5ae4ec3.jpg not processed
+INFO: Processing cc179043-56d3-57ec-8919-4aa48a89da36.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/cc179043-56d3-57ec-8919-4aa48a89da36.jpg not processed
+INFO: Processing 3362cb9f-9a16-53f3-8d00-3d5bc889faa6.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/3362cb9f-9a16-53f3-8d00-3d5bc889faa6.jpg not processed
+INFO: Processing 4d685f0c-9b4f-5865-be7c-d97e66749247.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/4d685f0c-9b4f-5865-be7c-d97e66749247.jpg not processed
+INFO: Processing 729618d4-fbc3-532f-9d29-02291acb6847.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/729618d4-fbc3-532f-9d29-02291acb6847.jpg not processed
+INFO: Processing fe33268c-7d51-5fe2-afe2-4f2ba384ceec.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/fe33268c-7d51-5fe2-afe2-4f2ba384ceec.jpg not processed
+INFO: Processing a292be90-7ce1-5f8b-b9c0-27bf58c91f90.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/a292be90-7ce1-5f8b-b9c0-27bf58c91f90.jpg not processed
+INFO: Processing 852bd239-34e3-5389-b16d-febd42012f2b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/852bd239-34e3-5389-b16d-febd42012f2b.jpg not processed
+INFO: Processing 761cc519-f8a4-58bb-a838-fd2a40e4cac2.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/761cc519-f8a4-58bb-a838-fd2a40e4cac2.jpg not processed
+INFO: Processing 497c743c-51f9-5f59-b58d-e48f673d5f01.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/497c743c-51f9-5f59-b58d-e48f673d5f01.jpg not processed
+INFO: Processing 656d9ac7-4a6b-5b5a-a60c-11fedd3a0289.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/656d9ac7-4a6b-5b5a-a60c-11fedd3a0289.jpg not processed
+INFO: Processing 73a82701-59fa-55ca-bc41-cd1522229bb9.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/73a82701-59fa-55ca-bc41-cd1522229bb9.jpg not processed
+INFO: Processing dca0844e-c98e-5a31-9a73-44ec8ff650ec.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/dca0844e-c98e-5a31-9a73-44ec8ff650ec.jpg not processed
+INFO: Processing 8f4c1fea-a2cb-58a7-b88f-1973b2cea44f.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8f4c1fea-a2cb-58a7-b88f-1973b2cea44f.jpg not processed
+INFO: Processing b8319db3-7e69-533b-afe8-646affc6ed3d.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/b8319db3-7e69-533b-afe8-646affc6ed3d.jpg not processed
+INFO: Processing 8ed8366d-699f-5b9e-ba99-808333538589.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/8ed8366d-699f-5b9e-ba99-808333538589.jpg not processed
+INFO: Processing 0acd9035-274b-5c7a-a10c-a6b7f930060c.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/0acd9035-274b-5c7a-a10c-a6b7f930060c.jpg not processed
+INFO: Processing 04bcc2ce-cc79-52be-93f3-ab75f16be06e.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/04bcc2ce-cc79-52be-93f3-ab75f16be06e.jpg not processed
+INFO: Processing 47057166-2ea1-5c62-9565-f7fc60f6eb8b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/47057166-2ea1-5c62-9565-f7fc60f6eb8b.jpg not processed
+INFO: Processing 70559b27-5aae-5ec9-abb6-1d92a3d7c74b.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/70559b27-5aae-5ec9-abb6-1d92a3d7c74b.jpg not processed
+INFO: Processing c36c10bd-d8ad-5bda-8dbc-910425985bf1.jpg
+WARNING: image /autodl-fs/data/data/data/MORE/img_org/total/c36c10bd-d8ad-5bda-8dbc-910425985bf1.jpg not processed
+INFO: Processing cde2bed3-78f5-5f03-a76c-d4a68d8a3449.jpg
+INFO: Enlarge object bicycle
