@@ -53,6 +53,39 @@ def get_obj(img,coords,args):
     rgba_image[:, :, 3] = masks[1]
 
     return rgba_image,masks
+def resize_and_mask_object(img, box, coords_bg,scale_factor, args):
+
+    x1,y1,x2,y2 = map(int,box.xyxy[0].cpu().numpy())
+    cropped_object = img[y1:y2, x1:x2]
+
+
+
+    cropped_masks = get_mask(img, coords_bg, args)
+
+
+    new_width = int(img.shape[1] * scale_factor)
+    new_height = int(img.shape[0] * scale_factor)
+    new_obj_w = int(cropped_object.shape[1] * scale_factor)
+    new_obj_h = int(cropped_object.shape[0] * scale_factor)
+    resized_img = cv2.resize(img, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+    resized_img_mask = cv2.resize(cropped_masks[1], (new_width, new_height), interpolation=cv2.INTER_NEAREST)
+
+
+    scaled_x1 = int(x1 * scale_factor)
+    scaled_y1 = int(y1 * scale_factor)
+    scaled_x2 = int(x2 * scale_factor)
+    scaled_y2 = int(y2 * scale_factor)
+
+
+    resized_object = resized_img[scaled_y1:scaled_y2, scaled_x1:scaled_x2]
+    resized_object_mask = resized_img_mask[scaled_y1:scaled_y2, scaled_x1:scaled_x2]
+
+
+    rgba_object = np.zeros((resized_object.shape[0], resized_object.shape[1], 4), dtype=np.uint8)
+    rgba_object[:, :, :3] = resized_object  # RGB通道
+    rgba_object[:, :, 3] = resized_object_mask  # Alpha通道
+
+    return rgba_object, resized_object_mask
 def resize_img(img,args):
 
     # Load the image
@@ -69,22 +102,16 @@ def resize_img(img,args):
             if label_name == "person":
                 continue
             x1,y1,x2,y2 = map(int,box.xyxy[0].cpu().numpy())
-            
-            scale_factor = np.random.choice([3,0.3])
-            cropped_object = img[y1:y2, x1:x2]
-            new_width = int(cropped_object.shape[1] * scale_factor)
-            new_height = int(cropped_object.shape[0] * scale_factor)
-            resized_object = cv2.resize(cropped_object, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+            scale_factor = np.random.choice([3,0.6])
             # 计算中心点cropped_object的中心点
             center_x_bg = int((x1+x2)/2)
             center_y_bg = int((y1+y2)/2)
-            center_x = int((resized_object.shape[0] // 2))
-            center_y = int((resized_object.shape[1]// 2))
-            coords = (center_x, center_y)
             coords_bg = (center_x_bg,center_y_bg)
-            rgba_object,masks_obj = get_obj(resized_object,coords,args)
+            # rgba_object,masks_obj = get_obj(resized_object,coords,args)
+            rgba_object,masks_obj = resize_and_mask_object(img,box,coords_bg,scale_factor,args)
 
-            cv2.imwrite("./resize_tmp/mask_obj.jpg",masks_obj[1])
+
+            cv2.imwrite("./resize_tmp/mask_obj.jpg",masks_obj)
             rgba_obj = Image.fromarray(rgba_object,mode= "RGBA")
             rgba_obj.save("./resize_tmp/rgba_obj.png")
             masks = get_mask(img,coords_bg,args)
@@ -95,14 +122,14 @@ def resize_img(img,args):
                 masks = [dilate_mask(mask, args.dilate_kernel_size) for mask in masks]
             img_inpainted = inpaint_img_with_lama(
             img, masks[1], args.lama_config, args.lama_ckpt, device=device)
-            # 将rgba_object粘贴到img_inpainted的指定位置
+
             img = img_inpainted
             cv2.imwrite("./resize_tmp/img_inpat.jpg",img)
             bg = Image.fromarray(img,mode="RGB")
             fg = Image.fromarray(rgba_object,mode="RGBA")
             pos = (x1, y1)
-            offset = ((pos[0]- coords_bg[0]) * scale_factor,(pos[1] - coords_bg[1]) * scale_factor)
-            new_pos = (int(coords_bg[0] - offset[0]),int(coords[1] - offset[1]))
+            offset = ((coords_bg[0] - pos[0]) * scale_factor,(coords_bg[1] - pos[1]) * scale_factor)
+            new_pos = (int(coords_bg[0] - offset[0]),int(coords_bg[1] - offset[1]))
 
             bg.paste(fg, new_pos, fg)
             img = np.array(bg)
