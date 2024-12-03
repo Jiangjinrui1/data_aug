@@ -34,7 +34,7 @@ def set_args(input_img = None,input_folder = None):
             self.input_img = input_img
             self.input_folder = input_folder
             self.output_folder = "/root/autodl-fs/resize_res"
-            self.dilate_kernel_size = 15
+            self.dilate_kernel_size = 5
             self.point_labels = [1]
             self.sam_ckpt = sam_checkpoint
             self.sam_model_type = "vit_h"
@@ -98,6 +98,7 @@ def resize_and_mask_object(img, box, coords_bg,scale_factor, args):
 def resize_img(img,args):
 
     Processed = False
+    label_processed = set()
     # Load the image
     if args.input_img is not None:
         img = cv2.imread(args.input_img)
@@ -113,11 +114,14 @@ def resize_img(img,args):
             label_name = label_mapping[int(label)]
             if label_name == "person":
                 continue
+            if label_name in label_processed:
+                continue
+            label_processed.add(label_name)
             Processed = True
             x1,y1,x2,y2 = map(int,box.xyxy[0].cpu().numpy())
-            scale_factor = np.random.choice([3,0.6])
+            scale_factor = np.random.choice([1.5,0.6])
             if tag == True:
-                if scale_factor == 3:
+                if scale_factor == 1.5:
                     logging.info(f"Enlarge object {label_name}")
                 else:
                     logging.info(f"Shrink object {label_name}")
