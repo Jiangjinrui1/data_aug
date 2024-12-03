@@ -24,6 +24,8 @@ def set_args(input_img = None,input_folder = None):
             self.point_labels = [1]
             self.sam_ckpt = sam_checkpoint
             self.sam_model_type = "vit_h"
+            self.lama_config = "./lama/configs/prediction/default.yaml"
+            self.lama_ckpt = lama_ckpt  
     return Args()
 def get_mask(img,coords,args):
     masks, _, _ = predict_masks_with_sam(
@@ -35,9 +37,20 @@ def get_mask(img,coords,args):
     device=device,
     ) 
     masks = masks.astype(np.uint8) * 255
+    return masks
+def get_obj(img,coords,args):
+    masks, _, _ = predict_masks_with_sam(
+    img,
+    [coords],
+    args.point_labels,
+    model_type=args.sam_model_type,
+    ckpt_p=args.sam_ckpt,
+    device=device,
+    ) 
+    masks = masks.astype(np.uint8) * 255
     rgba_image = np.zeros((img.shape[0], img.shape[1], 4), dtype=np.uint8)
     rgba_image[:, :, :3] = img
-    rgba_image[:, :, 3] = masks[2]
+    rgba_image[:, :, 3] = masks[1]
 
     return rgba_image,masks
 def resize_img(img,args):
@@ -57,35 +70,48 @@ def resize_img(img,args):
                 continue
             x1,y1,x2,y2 = map(int,box.xyxy[0].cpu().numpy())
             
-            scale_factor = np.random.choice([1.5,0.5])
+            scale_factor = np.random.choice([3,0.3])
             cropped_object = img[y1:y2, x1:x2]
             new_width = int(cropped_object.shape[1] * scale_factor)
             new_height = int(cropped_object.shape[0] * scale_factor)
             resized_object = cv2.resize(cropped_object, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
             # 计算中心点cropped_object的中心点
+            center_x_bg = int((x1+x2)/2)
+            center_y_bg = int((y1+y2)/2)
             center_x = int((resized_object.shape[0] // 2))
             center_y = int((resized_object.shape[1]// 2))
             coords = (center_x, center_y)
-            rgba_object,masks = get_mask(resized_object,coords,args)
+            coords_bg = (center_x_bg,center_y_bg)
+            rgba_object,masks_obj = get_obj(resized_object,coords,args)
+
+            cv2.imwrite("./resize_tmp/mask_obj.jpg",masks_obj[1])
+            rgba_obj = Image.fromarray(rgba_object,mode= "RGBA")
+            rgba_obj.save("./resize_tmp/rgba_obj.png")
+            masks = get_mask(img,coords_bg,args)
+            cv2.imwrite("./resize_tmp/mask_0.jpg",masks[1])
 
             # 将object从原图去除
             if args.dilate_kernel_size is not None:
                 masks = [dilate_mask(mask, args.dilate_kernel_size) for mask in masks]
             img_inpainted = inpaint_img_with_lama(
-            img, masks[2], args.lama_config, args.lama_ckpt, device=device)
+            img, masks[1], args.lama_config, args.lama_ckpt, device=device)
             # 将rgba_object粘贴到img_inpainted的指定位置
             img = img_inpainted
+            cv2.imwrite("./resize_tmp/img_inpat.jpg",img)
             bg = Image.fromarray(img,mode="RGB")
             fg = Image.fromarray(rgba_object,mode="RGBA")
-            # pos = (x1, y1)
-            new_pos = (x1 * scale_factor, y1 * scale_factor)
+            pos = (x1, y1)
+            offset = ((pos[0]- coords_bg[0]) * scale_factor,(pos[1] - coords_bg[1]) * scale_factor)
+            new_pos = (int(coords_bg[0] - offset[0]),int(coords[1] - offset[1]))
+
             bg.paste(fg, new_pos, fg)
             img = np.array(bg)
-
+    cv2.imwrite("./resize_tmp/resized_img.jpg",img)
     return results
 
     
 if __name__ =="__main__":
-    args = set_args(input_img = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\5a57b298-d2c4-5f34-ae93-257b6d808d24.jpg")
+    args = set_args(input_img = r"/autodl-fs/data/data/data/MORE/img_org/total/5a57b298-d2c4-5f34-ae93-257b6d808d24.jpg")
     result = resize_img(args.input_img,args)
         
+# sftp://root@connect.cqa1.seetacloud.com:29668/autodl-fs/data/data/data/MORE/img_org/total
