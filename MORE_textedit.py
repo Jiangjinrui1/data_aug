@@ -11,8 +11,8 @@ from datasets import Dataset, DatasetDict
 nltk.download("averaged_perceptron_tagger")
 # 设置代理（如有必要）
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
-os.environ["http_proxy"] = "http://localhost:7890"
-os.environ["https_proxy"] = "http://localhost:7890"
+# os.environ["http_proxy"] = "http://localhost:7890"
+# os.environ["https_proxy"] = "http://localhost:7890"
 
 # 加载 RoBERTa 模型用于 MLM
 mlm_model_name = "roberta-large"

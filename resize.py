@@ -164,7 +164,89 @@ def resize_img(img,args):
         logging.warning(f"image {url} not processed")
         return None
     return img
+def resize_img_with_label(img_path,target_label_name,args):
+    url = img_path
+    Processed = False
+    label_processed = set()
 
+    # Load the image
+    if args.input_img is not None:
+        img = cv2.imread(args.input_img)
+        tag = False
+    else:
+        img = cv2.imread(img)
+        tag = True
+
+    # Run the model on the image
+    results = model(img)
+
+    for result in results:
+        for box in result.boxes:
+            conf = box.conf[0]
+            label = box.cls.cpu().numpy()
+            label_name = label_mapping[int(label)]
+            
+            # Only process the target label
+            if label_name != target_label_name or conf <= 0.8:
+                continue
+            
+            # Avoid processing the same label multiple times
+            if label_name in label_processed:
+                continue
+            
+            label_processed.add(label_name)
+            Processed = True
+            x1, y1, x2, y2 = map(int, box.xyxy[0].cpu().numpy())
+            scale_factor = np.random.choice([1.5, 0.6])
+            
+            # Logging the scaling action
+            if tag:
+                if scale_factor == 1.5:
+                    logging.info(f"Enlarge object {label_name}")
+                else:
+                    logging.info(f"Shrink object {label_name}")
+
+            # Calculate the center point for cropping
+            center_x_bg = int((x1 + x2) / 2)
+            center_y_bg = int((y1 + y2) / 2)
+            coords_bg = (center_x_bg, center_y_bg)
+            
+            # Resize and mask the object
+            rgba_object, masks_obj = resize_and_mask_object(img, box, coords_bg, scale_factor, args)
+
+            # Save temporary results
+
+            rgba_obj = Image.fromarray(rgba_object, mode="RGBA")
+            masks = get_mask(img, coords_bg, args)
+
+            # Remove the object from the original image
+            if args.dilate_kernel_size is not None:
+                masks = [dilate_mask(mask, args.dilate_kernel_size) for mask in masks]
+            img_inpainted = inpaint_img_with_builded_lama(
+                model_lama, img, masks[1], args.lama_config, device=device
+            )
+
+            img = img_inpainted
+
+            # Prepare background and foreground for pasting
+            bg = Image.fromarray(img, mode="RGB")
+            fg = Image.fromarray(rgba_object, mode="RGBA")
+            pos = (x1, y1)
+            offset = ((coords_bg[0] - pos[0]) * scale_factor, (coords_bg[1] - pos[1]) * scale_factor)
+            new_pos = (int(coords_bg[0] - offset[0]), int(coords_bg[1] - offset[1]))
+
+            bg.paste(fg, new_pos, fg)
+            img = np.array(bg)
+
+    # Save the final processed image
+    cv2.imwrite("./resize_tmp/resized_img.jpg", img)
+    
+    # If no object was processed, log a warning
+    if not Processed:
+        logging.warning(f"image {url} not processed")
+        return None
+    
+    return img
 def process_in_folder(args):
     output_folder = args.output_folder
     input_folder = args.input_folder

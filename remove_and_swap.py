@@ -25,7 +25,9 @@ logging.basicConfig(level=logging.INFO,
                     filename='./swap_log.log',
                     filemode='w')
 
-
+def build_r_s_model():
+    model_yolo = YOLO('/root/autodl-tmp/yolov5lu.pt')
+    return model_yolo
 def setup_args():
     class Args:
         def __init__(self):
