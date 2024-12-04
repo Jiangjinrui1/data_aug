@@ -1,3 +1,3 @@
-pretrained_model: /root/.cache/torch/hub/checkpoints/epoch=1-step=8687.ckpt
+pretrained_model: /root/autodl-tmp/epoch=1-step=8687.ckpt
 config_file: configs/anydoor.yaml
 save_memory: False

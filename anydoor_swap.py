@@ -26,7 +26,7 @@ import logging
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
-                    filename='swap.log',  # 指定日志文件名
+                    filename='./log/swap.log',  # 指定日志文件名
                     filemode='w')  # 'w' 为覆盖模式，'a' 为追加模式
 
 
@@ -42,7 +42,7 @@ model_ckpt =  config.pretrained_model
 model_config = config.config_file
 
 model = create_model(model_config).cpu()
-model.load_state_dict(load_state_dict(model_ckpt, location='cuda'))
+model.load_state_dict(load_state_dict(model_ckpt, location='cuda'),strict = False)
 model = model.cuda()
 ddim_sampler = DDIMSampler(model)
 
@@ -224,7 +224,7 @@ def inference_single_image(ref_image, ref_mask, tar_image, tar_mask, guidance_sc
     strength = 1  #gr.Slider(label="Control Strength", minimum=0.0, maximum=2.0, value=1.0, step=0.01)
     guess_mode = False #gr.Checkbox(label='Guess Mode', value=False)
     #detect_resolution = 512  #gr.Slider(label="Segmentation Resolution", minimum=128, maximum=1024, value=512, step=1)
-    ddim_steps = 100 #gr.Slider(label="Steps", minimum=1, maximum=100, value=20, step=1)
+    ddim_steps = 50 #gr.Slider(label="Steps", minimum=1, maximum=100, value=20, step=1)
     scale = guidance_scale  #gr.Slider(label="Guidance Scale", minimum=0.1, maximum=30.0, value=9.0, step=0.1)
     seed = -1  #gr.Slider(label="Seed", minimum=-1, maximum=2147483647, step=1, randomize=True)
     eta = 0.0 #gr.Number(label="eta (DDIM)", value=0.0)
@@ -507,20 +507,27 @@ def extract_and_swap_objects(image_path,save_path):
 
     # 检查是否存在至少两个目标具有相同标签
     for label, objs in objects.items():
+        label_name = label_mapping[label]
         if len(objs) < 2 or label_name == "person":
             continue  # 如果目标数少于 2，跳过此标签
-
+        if label_name != "cup":
+            continue
         # 选择两个目标
         obj1, obj2 = objs[:2]
 
         # 使用 SAM 生成掩码
         masks = []
-        for obj in [obj1, obj2]:
-            input_points = np.array([obj["center"]])
-            input_labels = np.array([1])
-            mask, _, _ = predictor.predict(point_coords=input_points, point_labels=input_labels)
+        # for obj in [obj1, obj2]:
+        #     input_points = np.array([obj["center"]])
+        #     input_labels = np.array([1])
+        #     mask, _, _ = predictor.predict(point_coords=input_points, point_labels=input_labels)
 
-            masks.append(mask[2])
+        #     masks.append(mask[2])
+        for i, obj in enumerate([obj1, obj2]):
+            x1, y1, x2, y2 = obj["bbox"]
+            mask = np.zeros(image.shape[:2], dtype=np.uint8)
+            mask[y1:y2, x1:x2] = 1  # 将边界框区域设为 1
+            masks.append(mask)
         # 使用SAM 进行目标分割
         # 裁剪目标区域
         obj_images = []
@@ -533,7 +540,7 @@ def extract_and_swap_objects(image_path,save_path):
             obj_images.append((cropped_image, cropped_mask, obj["bbox"]))
 
         # 获取背景图像（去除目标区域）
-        bg_mask = 1 - (masks[0] + masks[1])
+        # bg_mask = 1 - (masks[0] + masks[1])
         background = cv2.cvtColor(image.astype(np.uint8), cv2.COLOR_BGR2RGB)
 
         # 调用 AnyDoor 交换位置
@@ -596,10 +603,13 @@ def batch_process_images(input_dir, output_dir):
 if __name__ == '__main__': 
     
     # ==== Example for inferring a single image ===
-    save_path = './output'
-    image_path =r"/autodl-fs/data\data\data\MORE\img_org\total\0ce97a65-feb3-52ce-b4e1-dac18cb90a9f.jpg"
+    save_path = './output.jpg'
+    # sftp://root@connect.cqa1.seetacloud.com:29668/autodl-fs/data/data/data/MORE/img_org/total
+    # "D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\"
+    image_path ="/autodl-fs/data/data/data/MORE/img_org/total/00058803-fa8b-5587-ad35-0a2852c9fbdd.jpg"
+    print(os.path.exists(image_path))
     extract_and_swap_objects(image_path,save_path)
-
+    # "D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\335cb2b3-2053-53f3-abd9-007175ea6404.jpg"
 
     # reference_image_path = './examples/TestDreamBooth/FG/01.png'
     # bg_image_path = './examples/TestDreamBooth/BG/000000309203_GT.png'
@@ -672,4 +682,4 @@ if __name__ == '__main__':
 #     #'''
 
     
-
+# sftp://root@connect.cqa1.seetacloud.com:29668/autodl-fs/data/data/data/MORE/img_org/total/00424d6a-6792-5630-bcd2-ea7c77367dd8.jpg

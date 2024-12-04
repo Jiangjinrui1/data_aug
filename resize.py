@@ -14,7 +14,7 @@ from pathlib import Path
 logging.basicConfig(level=logging.INFO, 
                     format="%(levelname)s: %(message)s",
                     filename="./log/resize.log",
-                    filemode="w"
+                    filemode="a"
                     )
 
 # loading model
@@ -113,7 +113,7 @@ def resize_img(img,args):
             conf = box.conf[0]
             label = box.cls.cpu().numpy()
             label_name = label_mapping[int(label)]
-            if label_name == "person" or label_name == "tie" or conf <= 0.85:
+            if label_name == "person" or label_name == "tie" or conf <= 0.8:
                 continue
             if label_name in label_processed:
                 continue
@@ -177,6 +177,7 @@ def process_in_folder(args):
         output_image_path = output_folder / image_file
         if output_image_path.exists():
             logging.info(f"{output_image_path}has already exists,skip...")
+            count += 1
             continue
         image_path = os.path.join(input_folder, image_file)
         res = resize_img(image_path,args)

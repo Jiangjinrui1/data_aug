@@ -270,8 +270,9 @@ class FrozenOpenCLIPImageEncoder(AbstractEncoder):
         return self(image)
 
 sys.path.append("./dinov2")
-# import hubconf
+import hubconf
 from omegaconf import OmegaConf
+# from torchvision.models import vit_b_16
 config_path = './configs/anydoor.yaml'
 config = OmegaConf.load(config_path)
 DINOv2_weight_path = config.model.params.cond_stage_config.weight
@@ -282,7 +283,13 @@ class FrozenDinoV2Encoder(AbstractEncoder):
     """
     def __init__(self, device="cuda", freeze=True):
         super().__init__()
-        dinov2 = torch.hub.load('/root/.cache/torch/hub/checkpoints/dinov2_vitg14_pretrain.pth', 'dinov2_vitg14')
+        # # dinov2 = torch.hub.load('/root/.cache/torch/hub/checkpoints/dinov2_vitg14_pretrain.pth', 'dinov2_vitg14')
+        # dinov2 = vit_b_16(pretrained = False)
+        # checkpoint_path = '/root/.cache/torch/hub/checkpoints/dinov2_vitg14_pretrain.pth'
+        # state_dict = torch.load(checkpoint_path, map_location='cpu')
+
+        # dinov2.load_state_dict(state_dict,strict=False)
+        dinov2 = hubconf.dinov2_vitg14() 
         state_dict = torch.load(DINOv2_weight_path)
         dinov2.load_state_dict(state_dict, strict=False)
         self.model = dinov2.to(device)
