@@ -1,7 +1,7 @@
 import os
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
-os.environ['http__proxy'] = 'http://127.0.0.1:7890'
-os.environ['https_proxy'] = 'http://127.0.0.1:7890'
+# os.environ['http__proxy'] = 'http://127.0.0.1:7890'
+# os.environ['https_proxy'] = 'http://127.0.0.1:7890'
 
 import json
 import ast
@@ -440,15 +440,16 @@ def process_single_object(
 
 # 示例使用方法
 if __name__ == "__main__":
-    img_folder = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\train"
-    txt_file = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\txt/train.txt"
-    caption_file = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\caption_dict.json"
-    cap_modified_file = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\caption_modified.json"  # 修改后的 caption 文件
-    output_dir = './results_more/train'
+    img_folder = r"/autodl-fs/data/data/data/MORE/img_org/train"
+    txt_file = r"/autodl-fs/data/data/data/MORE/txt/train.txt"
+    caption_file = r"/autodl-fs/data/data/data/MORE/caption_dict.json"
+    # sftp://root@connect.cqa1.seetacloud.com:29668/autodl-fs/data/data/data/MORE/caption_dict.json
+    cap_modified_file = r"/autodl-fs/data/data/data/MORE/caption_modified.json"  # 修改后的 caption 文件
+    output_dir = '/root/autodl-fs/data/results_more/train'
     
     dilate_kernel_size = 15
     sam_model_type = 'vit_h'
-    sam_ckpt = './pretrained_models/sam_vit_h_4b8939.pth'
+    sam_ckpt = '/root/autodl-tmp/sam_vit_h_4b8939.pth'
     seed = None
     
     pipeline_process_images_from_folder(

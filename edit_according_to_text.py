@@ -4,9 +4,9 @@ import ast
 import cv2
 import numpy as np
 
-from remove_and_swap import remove_and_swap
-from resize import resize_img
-from anydoor_swap import extract_and_swap_objects
+# from remove_and_swap import remove_and_swap
+# from resize import resize_img
+# from anydoor_swap import extract_and_swap_objects
 
 
 from ultralytics import YOLO
@@ -15,14 +15,15 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from openai import OpenAI
 import openai
 
-model_yolo = YOLO("yolov5lu.pt")
+model_yolo = YOLO("/root/autodl-tmp/yolov5lu.pt")
 vectorizer = TfidfVectorizer()
-openai.api_key = 'your-api-key'
+# openai.api_key = 'your-api-key'
+# openai.api_key = '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'
 
 
 
-url_text = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\txt\train.txt"
-url_json = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\caption_dict.json"
+url_text = r"/autodl-fs/data/data/data/MORE/txt/train.txt"
+url_json = r"/autodl-fs/data/data/data/MORE/caption_dict.json"
 
 
 # load_text
@@ -47,7 +48,8 @@ def get_text_and_caption_by_img_id(img_id, text_dict, caption_dict):
     text_entries = text_dict.get(img_id, [])
     caption_entries = caption_dict.get(img_id, {})
         # 只提取caption的值
-    caption_values = list(caption_entries.values())
+    # caption_values = list(caption_entries.values())
+    caption_values = ' '.join(caption_entries.values())  # 使用空格连接所有的caption
     
     return text_entries, caption_values
 
@@ -62,11 +64,14 @@ def get_openai_similarities(text, yolov5_labels):
     """
     # 使用OpenAI API进行匹配
     prompt = f"Given the following description of an object: '{text}', which of these labels from the list below best describes it?\nLabels: {', '.join(yolov5_labels)}\nAnswer:"
-
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=prompt,
-        max_tokens=10,
+    client = client_size
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",  # 或使用 "gpt-3.5-turbo" 等
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=50,
         temperature=0
     )
     
@@ -79,7 +84,7 @@ def match_text_with_yolov5_using_openai(text_entries, caption_values, results):
     matched_labels = []
 
     # 获取YOLOv5的检测结果中的标签名称
-    yolov5_labels = [result.cls[0].cpu().numpy() for result in results]
+    yolov5_labels = [box.cls[0].cpu().numpy() for result in results for box in result.boxes]
     label_mapping = model_yolo.names  # 获取YOLOv5的标签映射
     yolov5_label_names = [label_mapping[label] for label in yolov5_labels]
 
@@ -112,7 +117,11 @@ client_size = OpenAI()
 if __name__ == "__main__":
 
     a,b = get_text_and_caption_by_img_id("3cc2e961-69a3-5ca8-92b9-9eb057e139df.jpg", text_dict, caption_dict)
-    print(a,b)
+    img = "/autodl-fs/data/data/data/MORE/img_org/total/3cc2e961-69a3-5ca8-92b9-9eb057e139df.jpg"
+    matched_labels = detect_objects_and_match_text_with_openai(img, a, b)
+    print(matched_labels)
+    # print(a,b)
+
 
 
 

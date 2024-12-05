@@ -13,3 +13,6 @@ einops
 transformers
 open_clip_torch==2.17.1
 xformers
+openai
+diffusers
+accelerate
