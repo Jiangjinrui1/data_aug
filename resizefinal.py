@@ -102,29 +102,18 @@ def resize_and_mask_object(img, box, coords_bg, scale_factor, args):
     return rgba_object, resized_object_mask
 
 def load_pth(pth_path):
-    """
-    加载 .pth 文件，返回字典
-    """
     return torch.load(pth_path, map_location='cpu')
 
 def load_json(json_path):
-    """
-    加载 JSON 文件，返回字典
-    """
     with open(json_path, 'r') as f:
         return json.load(f)
 
 def is_box_within(box1, box2):
-    """
-    检查 box1 是否完全包含在 box2 中
-    box: (x1, y1, x2, y2)
-    """
     return box1[0] >= box2[0] and box1[1] >= box2[1] and box1[2] <= box2[2] and box1[3] <= box2[3]
-
 
 def resize_img_from_url(img_url, ent_train_dict, caption_dict, args):
     """
-    根据图片URL进行处理，返回修改后的图像
+    根据图片URL进行处理,返回修改后的图像
     """
     try:
         img = Image.open(img_url).convert("RGB")
@@ -141,8 +130,8 @@ def resize_img_from_url(img_url, ent_train_dict, caption_dict, args):
         logging.warning(f"图片 {img_filename} 不存在于 .pth 或 .json 文件中")
         return None
     
-    obj_boxes = ent_train_dict[img_filename]  # 格式: {'[OBJ0]': (x, y, w, h), ...}
-    obj_captions = caption_dict[img_filename]  # 格式: {'[OBJ0]': "caption", ...}
+    obj_boxes = ent_train_dict[img_filename]  #{'[OBJ0]': (cx, cy, w, h), ...}
+    obj_captions = caption_dict[img_filename]  #{'[OBJ0]': "caption", ...}
     
     # 将相对坐标转换为绝对坐标
     height, width, _ = img.shape
@@ -178,7 +167,6 @@ def resize_img_from_url(img_url, ent_train_dict, caption_dict, args):
             det_x1, det_y1, det_x2, det_y2 = map(int, box.xyxy[0].cpu().numpy())
             det_box = (det_x1, det_y1, det_x2, det_y2)
             
-            # 检查检测到的框是否包含在数据集给定的任何一个OBJ框内
             matched = False
             matched_obj_id = None
             for obj_id, obj_box in obj_absolute_boxes.items():
@@ -187,7 +175,7 @@ def resize_img_from_url(img_url, ent_train_dict, caption_dict, args):
                     matched_obj_id = obj_id
                     break
             if not matched:
-                continue  # 检测到的框不在任何OBJ框内，跳过
+                continue  
             
 
             caption = obj_captions.get(matched_obj_id, "")
@@ -266,7 +254,7 @@ def main():
     if resized_img is not None:
 
         result_image = Image.fromarray(resized_img)
-        result_image.show()  # 或者保存到指定位置
+        result_image.show()  
         result_image.save("resized_image.jpg")
     else:
         logging.info("未对图片进行处理。")
