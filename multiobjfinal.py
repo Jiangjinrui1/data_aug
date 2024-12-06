@@ -1,6 +1,8 @@
 import json
+import ast
 import torch
 import os
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 from pathlib import Path
 
 import cv2
@@ -56,13 +58,13 @@ def load_caption_dict(json_path):
 
 def load_txt_relations(txt_path):
     """
-    加载 txt 文件，解析每行的 JSON 字符串，返回一个字典。
+    加载 txt 文件，解析每行的字符串，返回一个字典。
     格式：{img_id: {obj_id: relation, ...}, ...}
     """
     relations_dict = {}
     with open(txt_path, 'r', encoding='utf-8') as f:
         for line in f:
-            data = json.loads(line.strip())
+            data = ast.literal_eval(line.strip())  # 使用 literal_eval 解析
             img_id = data['img_id']
             obj_id = data['t']['name']
             relation = data.get('relation', 'none')
@@ -280,7 +282,7 @@ def process_image(
         # 获取输入图像的文件夹路径
         input_dir = os.path.dirname(image_path)
         img_basename = os.path.splitext(os.path.basename(image_path))[0]
-        output_dir = os.path.join(input_dir, img_basename)
+        output_dir = os.path.join(args.output_dir, img_basename)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         output_path = os.path.join(output_dir, f"{i}.jpg")
@@ -290,10 +292,10 @@ def process_image(
 
 def main():
     args = setup_args()
-    image_path = "/autodl-fs/data/data/data/MORE/img_org/total/bbde4e6c-9cad-50d8-b860-12cb800357f7.jpg"
+    image_path = "/autodl-fs/data/data/data/MORE/img_org/total/2dead1d6-2217-51b8-bb8a-8c8afbf52b28.jpg"
     url_text = r"/autodl-fs/data/data/data/MORE/txt/train.txt"
     url_json = r"/autodl-fs/data/data/data/MORE/caption_dict.json"
-    url_mod_json = r"/autodl-fs/data/data/data/MORE/caption_modified_dict.json"
+    url_mod_json = r"/autodl-fs/data/data/data/MORE/caption_modified.json"
     url_pth = r"/autodl-fs/data/data/data/MORE/ent_train_dict.pth" 
     process_image(image_path, 
                   url_pth, 
