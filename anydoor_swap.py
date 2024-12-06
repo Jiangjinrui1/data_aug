@@ -249,221 +249,6 @@ def inference_single_image(ref_image, ref_mask, tar_image, tar_mask, guidance_sc
     tar_box_yyxx_crop = item['tar_box_yyxx_crop'] 
     gen_image = crop_back(pred, tar_image, sizes, tar_box_yyxx_crop) 
     return gen_image
-
-def normalize(value, min_value, max_value):
-    """
-    对单个指标进行归一化。
-    """
-    if max_value == min_value:  # 防止除零
-        return 0.0
-    return (value - min_value) / (max_value - min_value)
-def extract_objects_with_irregular_mask(image, masks):
-    """
-    使用不规则掩码从图像中提取目标。
-
-    Args:
-        image (numpy.ndarray): 原始图像 (H, W, 3)。
-        masks (list): SAM 模型预测的掩码列表，每个掩码为 (H, W)。
-
-    Returns:
-        list: 每个元素为裁剪后的目标 (裁剪图像, 掩码)。
-    """
-    obj_images = []
-    intermediate_dir = "./tmp_mask"
-
-    for i, mask in enumerate(masks):
-        # 创建一个空白 RGBA 图像
-        rgba_image = np.zeros((image.shape[0], image.shape[1], 4), dtype=np.uint8)
-
-        # 应用掩码提取目标
-        rgba_image[:, :, :3] = image  # 复制 RGB 通道
-        rgba_image[:, :, 3] = (mask * 255).astype(np.uint8)  # 将掩码作为 Alpha 通道
-
-
-        # 裁剪目标区域
-        # cropped_image = rgba_image[y1:y2, x1:x2]
-        save_mask_path = os.path.join(intermediate_dir, f"mask_{i}.png")
-        save_obj_path = os.path.join(intermediate_dir, f"obj_{i}.png")
-        # 保存裁剪后的结果
-        rgb_image = rgba_image[:,:,:3]
-        rgb_image = cv2.cvtColor(rgb_image, cv2.COLOR_BGR2RGB)
-        mask = (rgba_image[:,:,3]>128).astype(np.uint8)
-        obj_images.append((rgb_image, mask))
-        cv2.imwrite(save_obj_path, rgba_image)
-        cv2.imwrite(save_mask_path, mask)
-
-    return obj_images
-def extract_objects_with_sam(image, bbox, predictor):
-    """
-    利用 YOLOv5 提取的边界框和 SAM 模型生成目标掩码。
-
-    Args:
-        image (numpy.ndarray): 原始图像 (H, W, 3)。
-        bbox (tuple): 边界框 (x1, y1, x2, y2)。
-        predictor: SAM 模型的预测器对象。
-
-    Returns:
-        numpy.ndarray: 仅保留目标的裁剪图像，其余区域全黑。
-        numpy.ndarray: SAM 生成的目标掩码。
-    """
-    x1, y1, x2, y2 = bbox
-
-    cropped_image = image[y1:y2, x1:x2]
-    # 使用 SAM 生成目标的掩码
-    predictor.set_image(cropped_image)
-    input_points = np.array([[(x2 - x1) // 2, (y2 - y1) // 2]])  # 中心点
-    input_labels = np.array([1])
-    masks, _, _ = predictor.predict(point_coords=input_points, point_labels=input_labels)
-
-    # 提取目标掩码（取第一个）
-    mask = masks[2]
-    cropped_image[mask == 0] = 0
-    # 裁剪目标区域
-    # cropped_image = image[y1:y2, x1:x2]
-    # 构造全黑背景的目标图像
-    cropped_mask = (mask > 128).astype(np.uint8)  # 转为二值化掩码
-
-    cv2.imwrite("cropped_result.png", cropped_image)
-    cv2.imwrite("cropped_mask.png", cropped_mask)
-
-    return cropped_image, cropped_mask
-# def extract_and_swap_objects(image_path,save_path):
-#     """
-#     提取具有相同标签的两个目标及其掩码，并交换位置。
-
-#     Args:
-#         image_path (str): 输入图像路径。
-#         save_path (str): 输出图像保存路径。
-
-#     Returns:
-#         None: 如果没有符合条件的目标，直接跳过。
-#     """
-#     image = cv2.imread(image_path)
-#     if image is None:
-#         print("Image not found:", image_path)
-#         return
-
-#     # 推理检测
-#     results = model_yolo(image)
-
-#     # 加载 SAM 模型
-#     predictor.set_image(image)
-#     # 获取类别映射
-#     label_mapping = model_yolo.names  # {0: 'person', 1: 'bicycle', 2: 'car', ...}
-#     # 提取检测结果，按标签分组
-#     objects = {}
-#     for r in results:
-#         for box in r.boxes:
-#             label = int(box.cls[0])  # 类别
-#             confidence = box.conf[0]  # 置信度
-#             x1, y1, x2, y2 = map(int, box.xyxy[0])  # 边界框坐标
-#             cx, cy = (x1 + x2) // 2, (y1 + y2) // 2  # 中心点
-#             area = (x2 - x1) * (y2 - y1)  # 计算边界框面积
-#             aspect_ratio = (x2 - x1) / (y2 - y1)  # 计算宽高比
-
-#             # 保存到按类别分组的字典
-#             if label not in objects:
-#                 objects[label] = []
-#             objects[label].append({
-#                 "area": area,
-#                 "aspect_ratio": aspect_ratio,
-#                 "bbox": (x1, y1, x2, y2),
-#                 "confidence": confidence,
-#                 "center": (cx, cy)
-#             })
-
-#     # 检查是否存在至少两个目标具有相同标签
-#     tag = True
-#     label_name = None
-#     image_center = (image.shape[1] // 2, image.shape[0] // 2)  # 图像中心点
-#     # 综合排序权重
-#     AREA_WEIGHT = 1.0
-#     SHAPE_WEIGHT = 1.0
-#     CENTER_WEIGHT = 1.0
-#     # 提取指标范围用于归一化
-#     all_areas = [obj["area"] for objs in objects.values() for obj in objs]
-#     all_ratios = [obj["aspect_ratio"] for objs in objects.values() for obj in objs]
-#     all_centers = [
-#         np.linalg.norm(np.array(obj["center"]) - np.array(image_center))
-#         for objs in objects.values() for obj in objs
-#     ]
-
-#     min_area, max_area = min(all_areas), max(all_areas)
-#     min_ratio, max_ratio = min(all_ratios), max(all_ratios)
-#     min_center, max_center = min(all_centers), max(all_centers)
-#     for label, objs in objects.items():
-#         if len(objs) < 2:
-#             tag = False
-#             label_name = None
-#             continue  # 如果目标数少于 2，跳过此标签
-#         else:
-#             tag = True
-#         if tag == True:
-#             # 对所有目标进行两两组合打分
-#             min_score = float('inf')
-#             obj1, obj2 = None, None
-#             for i in range(len(objs)):
-#                 for j in range(i + 1, len(objs)):
-#                     o1, o2 = objs[i], objs[j]
-#                         # 归一化后计算指标
-#                     area_diff = normalize(abs(o1["area"] - o2["area"]), min_area, max_area)
-#                     shape_diff = normalize(abs(o1["aspect_ratio"] - o2["aspect_ratio"]), min_ratio, max_ratio)
-#                     center1 = np.linalg.norm(np.array(o1["center"]) - np.array(image_center))
-#                     center2 = np.linalg.norm(np.array(o2["center"]) - np.array(image_center))
-#                     center_score = normalize(center1 + center2, min_center, max_center)
-
-#                     # 综合得分
-#                     score = (
-#                         AREA_WEIGHT * area_diff +
-#                         SHAPE_WEIGHT * shape_diff +
-#                         CENTER_WEIGHT * center_score
-#                     )
-
-#                     if score < min_score:
-#                         min_score = score
-#                         obj1, obj2 = o1, o2
-#             # 使用 SAM 提取目标和掩码
-#             # cropped1, mask1 = extract_objects_with_sam(image, obj1["bbox"], predictor)
-#             # cropped2, mask2 = extract_objects_with_sam(image, obj2["bbox"], predictor)
-
-#             # 使用 SAM 生成背景掩码
-#             bg_masks = []
-#             intermediate_dir = "./tmp_mask"
-#             for i,obj in enumerate([obj1, obj2]):
-#                 input_points = np.array([obj["center"]])
-#                 input_labels = np.array([1])
-#                 bg_mask, _, _ = predictor.predict(point_coords=input_points, point_labels=input_labels)
-#                 bg_masks.append(bg_mask[2])
-#                     # 使用 YOLOv5 的边界框生成掩码
-#             # masks = []
-#             # intermediate_dir = "./tmp_mask"
-#             # for i, obj in enumerate([obj1, obj2]):
-#             #     x1, y1, x2, y2 = obj["bbox"]
-#             #     mask = np.zeros(image.shape[:2], dtype=np.uint8)
-#             #     mask[y1:y2, x1:x2] = 1  # 将边界框区域设为 1
-#             #     masks.append(mask)
-
-#                 # 保存每个目标的掩码
-#                 mask_path = os.path.join(intermediate_dir, f"bg_mask_{i}.png")
-#                 cv2.imwrite(mask_path, bg_masks[i].astype(np.uint8) * 255)
-#                 print(f"Saved mask {i} to {mask_path}")
-#             # 裁剪目标区域
-#             obj_images = extract_objects_with_irregular_mask(image, bg_masks)
-
-#             # 获取背景图像（去除目标区域）
-#             background = cv2.cvtColor(image.astype(np.uint8), cv2.COLOR_BGR2RGB)
-
-#             # 调用 AnyDoor 交换位置
-#             gen_image1 = inference_single_image(cropped1, mask1, background.copy(), bg_masks[1])
-#             background = gen_image1.astype(np.uint8)
-#             gen_image2 = inference_single_image(cropped2, mask2, background.copy(), bg_masks[0])
-
-#             # 保存结果
-#             result_image = cv2.cvtColor(gen_image2, cv2.COLOR_RGB2BGR)
-#             cv2.imwrite(save_path, result_image)
-#             print(f"Saved swapped image to {save_path}")
-#             break
-#     return  tag,label_name
 def extract_and_swap_objects(image_path,save_path):
     """
     提取具有相同标签的两个目标及其掩码，并交换位置。
@@ -505,31 +290,22 @@ def extract_and_swap_objects(image_path,save_path):
                 "center": (cx, cy)
             })
 
-    # 检查是否存在至少两个目标具有相同标签
+
     for label, objs in objects.items():
         label_name = label_mapping[label]
         if len(objs) < 2 or label_name == "person":
             continue  # 如果目标数少于 2，跳过此标签
-        if label_name != "cup":
-            continue
         # 选择两个目标
         obj1, obj2 = objs[:2]
 
         # 使用 SAM 生成掩码
         masks = []
-        # for obj in [obj1, obj2]:
-        #     input_points = np.array([obj["center"]])
-        #     input_labels = np.array([1])
-        #     mask, _, _ = predictor.predict(point_coords=input_points, point_labels=input_labels)
-
-        #     masks.append(mask[2])
         for i, obj in enumerate([obj1, obj2]):
             x1, y1, x2, y2 = obj["bbox"]
             mask = np.zeros(image.shape[:2], dtype=np.uint8)
             mask[y1:y2, x1:x2] = 1  # 将边界框区域设为 1
             masks.append(mask)
-        # 使用SAM 进行目标分割
-        # 裁剪目标区域
+
         obj_images = []
         for i, obj in enumerate([obj1, obj2]):
             x1, y1, x2, y2 = obj["bbox"]
@@ -539,8 +315,7 @@ def extract_and_swap_objects(image_path,save_path):
             cropped_mask = cropped_mask.astype(np.uint8)
             obj_images.append((cropped_image, cropped_mask, obj["bbox"]))
 
-        # 获取背景图像（去除目标区域）
-        # bg_mask = 1 - (masks[0] + masks[1])
+
         background = cv2.cvtColor(image.astype(np.uint8), cv2.COLOR_BGR2RGB)
 
         # 调用 AnyDoor 交换位置
@@ -568,25 +343,23 @@ def batch_process_images(input_dir, output_dir):
     Returns:
         None
     """
-    # 检查输出目录是否存在，不存在则创建
+
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    # 获取目录中的所有图像文件
+
     image_files = [
         os.path.join(input_dir, file) for file in os.listdir(input_dir)
         if file.lower().endswith(('.png', '.jpg', '.jpeg'))
     ]
 
     processed_img_count = 0
-    # 遍历所有图像文件并处理
+
     for image_path in tqdm(image_files, desc="Processing Images"):
         try:
-            # 构造输出路径
             image_name = os.path.basename(image_path)
             save_path = os.path.join(output_dir, f"{image_name}")
 
-            # 调用单张图像的处理函数
             tag,label = extract_and_swap_objects(image_path, save_path)
             if tag == True:
                 processed_img_count += 1
