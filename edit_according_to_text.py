@@ -18,7 +18,6 @@ import openai
 model_yolo = YOLO("/root/autodl-tmp/yolov5lu.pt")
 vectorizer = TfidfVectorizer()
 # openai.api_key = 'your-api-key'
-# openai.api_key = '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'
 
 
 
