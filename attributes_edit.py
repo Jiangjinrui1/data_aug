@@ -277,6 +277,7 @@ def process_image(
             dilate_kernel_size=dilate_kernel_size,
             args=args,
         )
+        break
     
     for i, img in enumerate(images):
 
@@ -292,7 +293,7 @@ def process_image(
 
 def main():
     args = setup_args()
-    image_path = "/autodl-fs/data/data/data/MORE/img_org/total/2dead1d6-2217-51b8-bb8a-8c8afbf52b28.jpg"
+    image_path = "/autodl-fs/data/data/data/MORE/img_org/total/24787a93-2369-5b1b-963d-b39aecb0d801.jpg"
     url_text = r"/autodl-fs/data/data/data/MORE/txt/train.txt"
     url_json = r"/autodl-fs/data/data/data/MORE/caption_dict.json"
     url_mod_json = r"/autodl-fs/data/data/data/MORE/caption_modified.json"
