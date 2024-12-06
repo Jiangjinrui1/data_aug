@@ -19,14 +19,14 @@ from diffusers import StableDiffusionInpaintPipeline
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
-clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+# clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+# clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 pipe = StableDiffusionInpaintPipeline.from_pretrained(
     "stabilityai/stable-diffusion-2-inpainting",
     torch_dtype=torch.float32,
     ).to(device)
+lama_ckpt = "/root/autodl-tmp/big-lama"
 lama_config = "./lama/configs/prediction/default.yaml"
-lama_ckpt = "./pretrained_models/big-lama"
 
 def load_txt_data(txt_file: str):
     """
@@ -76,20 +76,20 @@ def process_single_object(
     img_height, img_width = img.shape[:2]
     
     # 根据原始图像尺寸，将相对坐标转换为绝对坐标
-    abs_box = (
-        int(obj_box[0] * img_width),
-        int(obj_box[1] * img_height),
-        int(obj_box[2] * img_width),
-        int(obj_box[3] * img_height)
-    )
+    # abs_box = (
+    #     int(obj_box[0] * img_width),
+    #     int(obj_box[1] * img_height),
+    #     int(obj_box[2] * img_width),
+    #     int(obj_box[3] * img_height)
+    # )
     
     # 获取 OBJ 中心坐标作为 SAM 的点击点
-    center_x = (abs_box[0] + abs_box[2]) // 2
-    center_y = (abs_box[1] + abs_box[3]) // 2
-    # center_x, center_y, box_width, box_height = obj_box
+    # center_x = (abs_box[0] + abs_box[2]) // 2
+    # center_y = (abs_box[1] + abs_box[3]) // 2
+    center_x, center_y, box_width, box_height = obj_box
     # 将相对坐标转换为绝对坐标
-    # center_x = int(center_x * img_width)
-    # center_y = int(center_y * img_height)
+    center_x = int(center_x * img_width)
+    center_y = int(center_y * img_height)
     coords = [center_x, center_y]
     
     # 使用 SAM 模型生成遮罩
@@ -112,8 +112,9 @@ def process_single_object(
         img_removed = inpaint_img_with_lama(img, masks[2], config_p = lama_config, ckpt_p= lama_ckpt, device=device)
         # candidate_pairs.append((img,img_removed))
         # best_pair = select_best_image_pair(candidate_pairs,original_prompt,modified_caption)
-        save_path = out_dir / f"{img_stem}.png"
-        save_array_to_img(img_removed, save_path)              
+        save_path = out_dir / f"{img_stem}.jpg"
+        save_array_to_img(img_removed, save_path) 
+        print(f"saved in {save_path}")             
 
 
 def pipeline_process_images_from_folder(
