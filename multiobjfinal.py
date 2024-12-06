@@ -232,22 +232,22 @@ def process_image(
     # 过滤具有 relation 为 'none' 的对象
     filtered_ent_train = filter_objects(ent_train_dict, relations_dict)
     
-    # 读取图像
+
     image = cv2.imread(image_path)
     if image is None:
         print(f"Image not found: {image_path}")
         return
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     
-    # 获取 img_id
+  
     img_id = os.path.basename(image_path)
     
-    # 检测并匹配对象
+
     matched_objects = detect_and_match_objects(image_rgb, model_yolo, filtered_ent_train, img_id)
     
     if not matched_objects:
         print("No matching objects found with relation 'none'.")
-        return  # 返回原图
+        return  
     
     for obj in matched_objects:
         obj_id = obj["obj_id"]
@@ -266,7 +266,7 @@ def process_image(
             dilate_kernel_size = 7
         else:
             dilate_kernel_size = 15
-        # 使用 Stable Diffusion 进行 inpainting
+
         images = fill_anything(
             image=image,
             bbox=bbox,
@@ -279,7 +279,7 @@ def process_image(
         )
     
     for i, img in enumerate(images):
-        # 获取输入图像的文件夹路径
+
         input_dir = os.path.dirname(image_path)
         img_basename = os.path.splitext(os.path.basename(image_path))[0]
         output_dir = os.path.join(args.output_dir, img_basename)
@@ -287,7 +287,7 @@ def process_image(
             os.makedirs(output_dir)
         output_path = os.path.join(output_dir, f"{i}.jpg")
         cv2.imwrite(output_path, img)
-        # 输出保存路径
+
         print(f"Saved modified image to {output_path}")
 
 def main():
@@ -307,7 +307,42 @@ def main():
                   device,sam_model_type,sam_ckpt,
                   seed=None,
                   args=args)
-
+def batch_process_images(
+    img_folder: str,
+    ent_train_pth: str,
+    caption_json: str,
+    caption_modified_json: str,
+    txt_path: str,
+    output_dir: str,
+    model_yolo: YOLO,
+    pipe: StableDiffusionInpaintPipeline,
+    device: str,
+    sam_model_type: str,
+    sam_ckpt: str,
+    seed: int = None
+):
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    
+    image_files = [
+        os.path.join(img_folder, file) for file in os.listdir(img_folder)
+        if file.lower().endswith(('.png', '.jpg', '.jpeg'))
+    ]
+    
+    for image_path in image_files:
+        print(f"Processing image: {image_path}")
+        process_image(
+            image_path=image_path,
+            ent_train_pth=ent_train_pth,
+            caption_json=caption_json,
+            caption_modified_json=caption_modified_json,
+            txt_path=txt_path,
+            model_yolo=model_yolo,
+            pipe=pipe,
+            device=device,
+            sam_model_type=sam_model_type,
+            sam_ckpt=sam_ckpt,
+            seed=seed
+        )
 
 if __name__ == "__main__":
     main()
