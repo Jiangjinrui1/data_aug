@@ -221,7 +221,6 @@ if __name__ == "__main__":
     # sftp://root@connect.cqa1.seetacloud.com:29668/autodl-fs/data/data/data/MORE/caption_dict.json
     cap_modified_file = r"/autodl-fs/data/data/data/MORE/caption_modified.json"  # 修改后的 caption 文件
     output_dir = '/root/autodl-fs/data/results_more/train'
-    
     dilate_kernel_size = 15
     sam_model_type = 'vit_h'
     sam_ckpt = '/root/autodl-tmp/sam_vit_h_4b8939.pth'

@@ -227,13 +227,36 @@ def resize_img_from_url(img_url, ent_train_dict, caption_dict, args):
     
 
     if Processed:
-        resized_img_path = "./resize_tmp/resized_img.jpg"
+        # resized_img_path = "./resize_tmp/resized_img.jpg"
+        resized_img_path = os.path.join(args.output_dir, img_filename)
         cv2.imwrite(resized_img_path, img)
         logging.info(f"Processed image saved to {resized_img_path}")
         return img
     else:
         logging.warning(f"Image {img_filename} not processed")
         return None
+
+def batch_process_images(
+    img_folder: str,
+    ent_train_dict: str,
+    caption_dict: str,
+    args):
+    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    
+    image_files = [
+        os.path.join(img_folder, file) for file in os.listdir(img_folder)
+        if file.lower().endswith(('.png', '.jpg', '.jpeg'))
+    ]
+    
+    for image_path in image_files:
+        print(f"Processing image: {image_path}")
+        resize_img_from_url(
+            image_path=image_path,
+            ent_train_dict=ent_train_dict,
+            caption_dict=caption_dict,
+            args=args
+        )
+
 
 def main():
 

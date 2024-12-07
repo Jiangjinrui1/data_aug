@@ -297,6 +297,8 @@ def main():
     url_json = r"/autodl-fs/data/data/data/MORE/caption_dict.json"
     url_mod_json = r"/autodl-fs/data/data/data/MORE/caption_modified.json"
     url_pth = r"/autodl-fs/data/data/data/MORE/ent_train_dict.pth" 
+    img_folder = "/autodl-fs/data/data/data/MORE/img_org/train"
+    output_dir = "/autodl-fs/data/data/data/MORE/img_multi_mod"
     process_image(image_path, 
                   url_pth, 
                   url_json,
@@ -307,6 +309,19 @@ def main():
                   device,sam_model_type,sam_ckpt,
                   seed=None,
                   args=args)
+    batch_process_images(img_folder,
+                        url_pth,
+                        url_json,
+                        url_mod_json,
+                        url_text,
+                        output_dir,
+                        model_yolo,
+                        pipe,
+                        device,
+                        sam_model_type,
+                        sam_ckpt,
+                        seed=None)
+    
 def batch_process_images(
     img_folder: str,
     ent_train_pth: str,
