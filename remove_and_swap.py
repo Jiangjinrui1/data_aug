@@ -1,5 +1,5 @@
 import torch
-import sys
+import json
 import os
 import numpy as np
 from pathlib import Path
@@ -9,7 +9,6 @@ from sam_segment import predict_masks_with_sam
 from lama_inpaint import inpaint_img_with_lama
 from utilss import load_img_to_array, save_array_to_img, dilate_mask, \
     show_mask, show_points, get_clicked_point
-
 
 import cv2
 from PIL import Image
@@ -57,6 +56,158 @@ def is_overlapping(bbox1, bbox2):
     x1, y1, x2, y2 = bbox1
     x3, y3, x4, y4 = bbox2
     return not (x2 < x3 or x4 < x1 or y2 < y3 or y4 < y1)
+def load_ent_train_dict(pth_path):
+    ent_dict = torch.load(pth_path, map_location='cpu')
+    return ent_dict
+def load_caption_dict(json_path):
+    with open(json_path, 'r', encoding='utf-8') as f:
+        caption_dict = json.load(f)
+    return caption_dict
+def is_person_caption(caption):
+    person_vocabulary = {"man", "people", "person", "woman", "boy", "girl", "child", "men", "women"}
+    caption_lower = caption.lower()
+    words = caption_lower.split()
+    if any(word in person_vocabulary for word in words):
+        return True
+    return False
+
+def person_swap(img_id, pth_dict, caption_dict, image, args):
+    if img_id not in pth_dict:
+        print(f"Image {img_id} not in pth_dict")
+        return None
+
+    objs_info = pth_dict[img_id]  # { '[OBJ0]': (cx, cy, w, h), ... }
+
+    # 从caption_dict中获取该img_id对应的OBJ的caption
+    if img_id not in caption_dict:
+        print(f"Image {img_id} not in caption_dict")
+        return None
+
+    obj_captions = caption_dict[img_id]  # { '[OBJ0]': "Caption...", ... }
+
+    # 分析物体信息，提取person
+    objects = []
+    image_h, image_w = image.shape[0], image.shape[1]
+    image_center = (image_w // 2, image_h // 2)
+
+    # 提取OBJ并计算相关参数
+    for obj_key, (cx, cy, w, h) in objs_info.items():
+        # 将相对坐标换算为像素坐标（假设cx,cy,w,h为相对比例）
+        # 若pth中就是比例，则需根据图像大小转化为实际像素坐标
+        abs_cx = int(cx * image_w)
+        abs_cy = int(cy * image_h)
+        abs_w = int(w * image_w)
+        abs_h = int(h * image_h)
+
+        x1 = abs_cx - abs_w // 2
+        y1 = abs_cy - abs_h // 2
+        x2 = x1 + abs_w
+        y2 = y1 + abs_h
+
+        area = abs_w * abs_h
+        aspect_ratio = abs_w / abs_h if abs_h != 0 else 1.0
+        center = (abs_cx, abs_cy)
+        caption = obj_captions[obj_key]
+
+        label_name = 'person' if is_person_caption(caption) else 'object'
+
+        objects.append({
+            "obj_key": obj_key,
+            "label_name": label_name,
+            "area": area,
+            "aspect_ratio": aspect_ratio,
+            "bbox": (x1, y1, x2, y2),
+            "center": center,
+            "caption": caption
+        })
+
+    # 查找person数量
+    persons = [obj for obj in objects if obj["label_name"] == 'person']
+    if len(persons) < 2:
+        return None
+
+    all_areas = [obj["area"] for obj in persons]
+    all_ratios = [obj["aspect_ratio"] for obj in persons]
+    all_centers = [
+        np.linalg.norm(np.array(obj["center"]) - np.array(image_center))
+        for obj in persons
+    ]
+
+    min_area, max_area = min(all_areas), max(all_areas)
+    min_ratio, max_ratio = min(all_ratios), max(all_ratios)
+    min_center, max_center = min(all_centers), max(all_centers)
+
+    AREA_WEIGHT = 1.0
+    SHAPE_WEIGHT = 1.0
+    CENTER_WEIGHT = 1.0
+
+    min_score = float('inf')
+    obj1, obj2 = None, None
+
+    for i in range(len(persons)):
+        for j in range(i + 1, len(persons)):
+            o1, o2 = persons[i], persons[j]
+
+            area_diff = normalize(abs(o1["area"] - o2["area"]), min_area, max_area)
+            shape_diff = normalize(abs(o1["aspect_ratio"] - o2["aspect_ratio"]), min_ratio, max_ratio)
+
+            center1 = np.linalg.norm(np.array(o1["center"]) - np.array(image_center))
+            center2 = np.linalg.norm(np.array(o2["center"]) - np.array(image_center))
+            center_score = normalize(center1 + center2, min_center, max_center)
+
+            score = (AREA_WEIGHT * area_diff +
+                     SHAPE_WEIGHT * shape_diff +
+                     CENTER_WEIGHT * center_score)
+
+            if score < min_score:
+                min_score = score
+                obj1, obj2 = o1, o2
+
+    if obj1 is not None and obj2 is not None:
+        logging.info(f"Swapping objects label: person")
+
+        # 左上角坐标
+        obj1_left_top = (obj1['bbox'][0], obj1['bbox'][1])
+        obj2_left_top = (obj2['bbox'][0], obj2['bbox'][1])
+        res_image, new_pos1, new_pos2 = remove_and_swap(
+            image,
+            obj1['center'], obj2['center'],
+            obj1['bbox'], obj2['bbox'],
+            obj1_left_top, obj2_left_top,
+            args
+        )
+
+        w1 = obj1['bbox'][2] - obj1['bbox'][0]
+        h1 = obj1['bbox'][3] - obj1['bbox'][1]
+        w2 = obj2['bbox'][2] - obj2['bbox'][0]
+        h2 = obj2['bbox'][3] - obj2['bbox'][1]
+
+        new_cx1 = (new_pos1[0] + w1 // 2)
+        new_cy1 = (new_pos1[1] + h1 // 2)
+
+        new_cx2 = (new_pos2[0] + w2 // 2)
+        new_cy2 = (new_pos2[1] + h2 // 2)
+
+        # 转回相对坐标
+        new_cx1_rel = new_cx1 / image_w
+        new_cy1_rel = new_cy1 / image_h
+        new_cx2_rel = new_cx2 / image_w
+        new_cy2_rel = new_cy2 / image_h
+        w1_rel = w1 / image_w
+        h1_rel = h1 / image_h
+        w2_rel = w2 / image_w
+        h2_rel = h2 / image_h
+
+        # 更新pth_dict
+        pth_dict[img_id][obj1['obj_key']] = (new_cx1_rel, new_cy1_rel, w1_rel, h1_rel)
+        pth_dict[img_id][obj2['obj_key']] = (new_cx2_rel, new_cy2_rel, w2_rel, h2_rel)
+
+        # 如有需要，可将pth_dict重新保存回文件
+        torch.save(pth_dict, 'ent_train_dict_updated.pth')
+
+        return res_image
+    else:
+        return None
 
 def get_clicked_points(image_path):
     image = cv2.imread(image_path)
@@ -142,7 +293,6 @@ def get_clicked_points(image_path):
                     if score < min_score:
                         min_score = score
                         obj1, obj2 = o1, o2    
-            #左上角坐标
             obj1_left_top = (obj1['bbox'][0], obj1['bbox'][1])
             obj2_left_top = (obj2['bbox'][0], obj2['bbox'][1])
             return obj1['center'], obj2['center'], obj1['bbox'], obj2['bbox'],obj1_left_top,obj2_left_top
@@ -175,8 +325,6 @@ def remove_single_obj(img, coords, bbox, args):
         masks = [dilate_mask(mask, args.dilate_kernel_size) for mask in masks]
     img_inpainted = inpaint_img_with_lama(
     img, masks[2], args.lama_config, args.lama_ckpt, device=device)
-
-
 
     return img_inpainted,crop_rgba_image
 def remove_and_swap(img, coords1, coords2, bbox1,bbox2,position1,position2,args):
@@ -251,11 +399,37 @@ def swap_in_folder(input_folder, output_folder):
         print(f"Processed {image_file} and saved to {output_image_path}")
         return count
 
+def swap_in_folder_more(input_folder,output_folder):
+    ent_train_pth = r"/autodl-fs/data/data/data/MORE/ent_train_dict.pth" 
+    caption_json = r"/autodl-fs/data/data/data/MORE/caption.json"
+    output_folder = Path(output_folder)
+    output_folder.mkdir(parents=True, exist_ok=True)
+    image_files = [f for f in os.listdir(input_folder) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
+    count = 0
+    ent_train_dict = load_ent_train_dict(ent_train_pth)
+    caption_dict = load_caption_dict(caption_json)
+    for image_file in image_files:
+        image_path = os.path.join(input_folder, image_file)
+        image = cv2.imread(image_path)
+        res = person_swap(image_path,ent_train_dict,caption_dict,image,args)
+        if res is not None:
+            count += 1
+            output_image_path = output_folder / image_file
+            res.save(output_image_path)
+            print(f"Processed {image_file} and saved to {output_image_path}")
+        else:
+            print(f"Failed to process {image_file}")
+    return count
 
+
+
+    
 if __name__ == "__main__":
     args = setup_args()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # coords1,coords2,bbox1,bbox2,point1,point2 = get_clicked_points(args.input_img)
     # remove_and_swap(args.input_img, coords1,coords2, bbox1,bbox2,point1,point2, args)
-    swap_in_folder(args.input_folder, args.output_dir)
+    # swap_in_folder(args.input_folder, args.output_dir)
+    count = swap_in_folder_more(args.input_folder, args.output_dir)
+    print(f"Processed {count} images")
 

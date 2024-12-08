@@ -2,6 +2,7 @@ import cv2
 import os
 import einops
 import numpy as np
+import json
 import torch
 import random
 from pytorch_lightning import seed_everything
@@ -46,8 +47,6 @@ model.load_state_dict(load_state_dict(model_ckpt, location='cuda'),strict = Fals
 model = model.cuda()
 ddim_sampler = DDIMSampler(model)
 
-# model = None
-# ddim_sampler = None
 
 # 加载 YOLOv5 模型
 model_yolo = YOLO('/root/autodl-tmp/yolov5lu.pt')
