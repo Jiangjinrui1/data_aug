@@ -33,7 +33,7 @@ def setup_args():
             # self.input_img = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\000a91a4-7612-5842-9704-55c95894ce92.jpg"  # replace with your input image
             # self.input_img = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\0ce97a65-feb3-52ce-b4e1-dac18cb90a9f.jpg"
             # self.input_img = r"D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\1f993990-0666-5f54-9de8-957abfcb93d7.jpg"
-            self.input_folder = "/autodl-fs/data/data/data/MORE/img_org/total"
+            self.input_folder = "/autodl-fs/data/data/data/MORE/img_org/train"
             self.output_dir = "/root/autodl-fs/swap_res"
             self.coords_type = "key_in"
             self.point_labels = [1]
@@ -72,6 +72,7 @@ def is_person_caption(caption):
     return False
 
 def person_swap(img_id, pth_dict, caption_dict, image, args):
+    img_id = os.path.basename(img_id)
     if img_id not in pth_dict:
         print(f"Image {img_id} not in pth_dict")
         return None
@@ -357,7 +358,7 @@ def remove_and_swap(img, coords1, coords2, bbox1,bbox2,position1,position2,args)
     image_bgr = image_rgb[..., ::-1]
     res = Image.fromarray(image_bgr)
     res.save("final.png")
-    return res
+    return res,new_position1, new_position2
 
 def refinement(img,bbox1,bbox2,args):
     ...
@@ -401,7 +402,7 @@ def swap_in_folder(input_folder, output_folder):
 
 def swap_in_folder_more(input_folder,output_folder):
     ent_train_pth = r"/autodl-fs/data/data/data/MORE/ent_train_dict.pth" 
-    caption_json = r"/autodl-fs/data/data/data/MORE/caption.json"
+    caption_json = r"/autodl-fs/data/data/data/MORE/caption_dict.json"
     output_folder = Path(output_folder)
     output_folder.mkdir(parents=True, exist_ok=True)
     image_files = [f for f in os.listdir(input_folder) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
