@@ -40,7 +40,7 @@ def set_args(input_img=None, input_folder=None):
         def __init__(self):
             self.input_img = input_img
             self.input_folder = input_folder
-            self.output_folder = "./resize_res"
+            self.output_folder = "/autodl-fs/data/resize_res"
             self.dilate_kernel_size = 7
             self.point_labels = [1]
             self.sam_ckpt = sam_checkpoint
@@ -228,7 +228,8 @@ def resize_img_from_url(img_url, ent_train_dict, caption_dict, args):
 
     if Processed:
         # resized_img_path = "./resize_tmp/resized_img.jpg"
-        resized_img_path = os.path.join(args.output_dir, img_filename)
+        resized_img_path = os.path.join(args.output_folder, img_filename)
+        img = cv2.cvtColor(img.copy(), cv2.COLOR_RGB2BGR)
         cv2.imwrite(resized_img_path, img)
         logging.info(f"Processed image saved to {resized_img_path}")
         return img
@@ -241,7 +242,7 @@ def batch_process_images(
     ent_train_dict: str,
     caption_dict: str,
     args):
-    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    Path(args.output_folder).mkdir(parents=True, exist_ok=True)
     
     image_files = [
         os.path.join(img_folder, file) for file in os.listdir(img_folder)
@@ -249,13 +250,26 @@ def batch_process_images(
     ]
     
     for image_path in image_files:
+        imgname =os.path.basename(image_path)
+        savepath = os.path.join(args.output_folder,f"{imgname}")
+        if os.path.exists(savepath):
+            print("skip...")
+            continue
+        imgname =os.path.basename(image_path)
         print(f"Processing image: {image_path}")
-        resize_img_from_url(
-            image_path=image_path,
+        res = resize_img_from_url(
+            img_url=image_path,
             ent_train_dict=ent_train_dict,
             caption_dict=caption_dict,
             args=args
         )
+        if res is not None:
+            ...
+
+            # result_image = Image.fromarray(res)
+            # result_image.save(savepath)
+        else:
+            logging.info("未对图片进行处理。")
 
 
 def main():
@@ -283,4 +297,13 @@ def main():
         logging.info("未对图片进行处理。")
 
 if __name__ == "__main__":
-    main()
+    # main()
+    args = set_args(input_folder="/autodl-fs/data/data/data/MORE/img_org/train")
+    pth_path = "/autodl-fs/data/data/data/MORE/ent_train_dict.pth"  # 更新为实际路径
+    json_path = "/autodl-fs/data/data/data/MORE/caption_dict.json"  # 更新为实际路径
+    ent_train_dict = load_pth(pth_path)
+    caption_dict = load_json(json_path)
+    batch_process_images(args.input_folder,
+                         ent_train_dict,
+                         caption_dict,
+                         args)

@@ -1,1 +1,18 @@
-2024-12-04 11:29:42 - dinov2 - INFO - using SwiGLU layer as FFN
+2024-12-08 13:58:16 - dinov2 - INFO - using SwiGLU layer as FFN
+2024-12-08 13:59:23 - root - WARNING - Skipping /autodl-fs/data/data/data/MORE/img_org/train/f142b62f-889c-59dd-9c6b-86d39733dffe.jpg due to insufficient objects.
+2024-12-08 13:59:39 - root - INFO - skip...
+2024-12-08 13:59:51 - root - WARNING - Skipping /autodl-fs/data/data/data/MORE/img_org/train/a5e6fbb9-19a7-5c42-b1cd-2ab2c3fe43ee.jpg due to insufficient objects.
+2024-12-08 14:00:02 - root - WARNING - Skipping /autodl-fs/data/data/data/MORE/img_org/train/310c15fd-556f-5380-a5cb-e41f6e92d1b8.jpg due to insufficient objects.
+2024-12-08 14:00:03 - root - INFO - skip...
+2024-12-08 14:00:04 - root - INFO - skip...
+2024-12-08 14:00:05 - root - INFO - skip...
+2024-12-08 14:00:48 - root - INFO - Saved swapped image to /autodl-fs/data/anydoor_swap/3d8fa838-b437-5895-a037-6ace0062c4c1.jpg
+2024-12-08 14:00:58 - root - INFO - Processed 3d8fa838-b437-5895-a037-6ace0062c4c1.jpg
+2024-12-08 14:00:58 - root - INFO - Processes Objects: tie
+2024-12-08 14:00:59 - root - INFO - saved to /autodl-fs/data/anydoor_swap/3d8fa838-b437-5895-a037-6ace0062c4c1.jpg
+2024-12-08 14:01:00 - root - INFO - Processed 5 images.
+2024-12-08 14:01:49 - root - INFO - Saved swapped image to /autodl-fs/data/anydoor_swap/ed9ef800-1395-52c7-9118-f858d3f09610.jpg
+2024-12-08 14:01:55 - root - INFO - Processed ed9ef800-1395-52c7-9118-f858d3f09610.jpg
+2024-12-08 14:01:56 - root - INFO - Processes Objects: surfboard
+2024-12-08 14:01:56 - root - INFO - saved to /autodl-fs/data/anydoor_swap/ed9ef800-1395-52c7-9118-f858d3f09610.jpg
+2024-12-08 14:02:02 - root - INFO - Processed 6 images.

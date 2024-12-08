@@ -35,30 +35,23 @@ def setup_args():
         coords_type: str = "key_in"
         text_prompt: str = "a man with pink clothes"
         dilate_kernel_size: int = 15
-        output_dir: str = "./results"
+        output_dir: str = "/autodl-fs/data/att_mod"
         sam_model_type: str = "vit_h"
         sam_ckpt: str = "/root/autodl-tmp/sam_vit_h_4b8939.pth"
         seed: int = None
         deterministic: bool = False
     return Args()
 def load_ent_train_dict(pth_path):
-    """
-    加载 ent_train_dict.pth 文件，返回一个字典。
-    """
     ent_dict = torch.load(pth_path, map_location='cpu')
     return ent_dict
 
 def load_caption_dict(json_path):
-    """
-    加载 caption_dict.json 或 caption_dict_modified.json 文件，返回一个字典。
-    """
     with open(json_path, 'r', encoding='utf-8') as f:
         caption_dict = json.load(f)
     return caption_dict
 
 def load_txt_relations(txt_path):
     """
-    加载 txt 文件，解析每行的字符串，返回一个字典。
     格式：{img_id: {obj_id: relation, ...}, ...}
     """
     relations_dict = {}
@@ -74,9 +67,6 @@ def load_txt_relations(txt_path):
     return relations_dict
 
 def filter_objects(ent_train_dict, relations_dict):
-    """
-    过滤具有特定关系的对象，返回一个新的字典。
-    """
     filtered_dict = {}
     for img_id, objs in ent_train_dict.items():
         if img_id not in relations_dict:
@@ -128,9 +118,6 @@ def detect_and_match_objects(image, model_yolo, filtered_ent_train, img_id):
     return matched_objects
 
 def box_within(inner_box, outer_box):
-    """
-    检查 inner_box 是否完全包含在 outer_box 内。
-    """
     return (inner_box[0] >= outer_box[0] and
             inner_box[1] >= outer_box[1] and
             inner_box[2] <= outer_box[2] and
@@ -287,9 +274,13 @@ def process_image(
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         output_path = os.path.join(output_dir, f"{i}.jpg")
-        cv2.imwrite(output_path, img)
+        if img is not None and img.size > 0:
+            cv2.imwrite(output_path, img)
+            print(f"Saved modified image to {output_path}")
+        else:
+            print(f"Error: Image is empty or not loaded properly at {image_path}")
+        # cv2.imwrite(output_path, img)
 
-        print(f"Saved modified image to {output_path}")
 
 def main():
     args = setup_args()
@@ -301,28 +292,29 @@ def main():
     img_folder = "/autodl-fs/data/data/data/MORE/img_org/train"
     output_dir = "/autodl-fs/data/data/data/MORE/img_attr_mod"
 
-    process_image(image_path, 
-                  url_pth, 
-                  url_json,
-                  url_mod_json,
-                  url_text,
-                  model_yolo,
-                  pipe,
-                  device,sam_model_type,sam_ckpt,
-                  seed=None,
-                  args=args)
+    # process_image(image_path, 
+    #               url_pth, 
+    #               url_json,
+    #               url_mod_json,
+    #               url_text,
+    #               model_yolo,
+    #               pipe,
+    #               device,sam_model_type,sam_ckpt,
+    #               seed=None,
+    #               args=args)
     batch_process_images(img_folder,
                          url_pth,
                          url_json,
                          url_mod_json,
                          url_text,
-                         output_dir,
+                         args.output_dir,
                          model_yolo,
                          pipe,
                          device,
                          sam_model_type,
                          sam_ckpt,
-                         seed=None)
+                         seed=None,
+                         args = args)
 def batch_process_images(
     img_folder: str,
     ent_train_pth: str,
@@ -335,7 +327,8 @@ def batch_process_images(
     device: str,
     sam_model_type: str,
     sam_ckpt: str,
-    seed: int = None
+    seed: int = None,
+    args = None
 ):
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     
@@ -346,6 +339,11 @@ def batch_process_images(
     
     for image_path in image_files:
         print(f"Processing image: {image_path}")
+        img_basename = os.path.splitext(os.path.basename(image_path))[0]
+        output_dir = os.path.join(args.output_dir, img_basename)
+        if os.path.exists(output_dir):
+            print("skip")
+            continue
         process_image(
             image_path=image_path,
             ent_train_pth=ent_train_pth,
@@ -357,7 +355,8 @@ def batch_process_images(
             device=device,
             sam_model_type=sam_model_type,
             sam_ckpt=sam_ckpt,
-            seed=seed
+            seed=seed,
+            args = args
         )
 
 if __name__ == "__main__":

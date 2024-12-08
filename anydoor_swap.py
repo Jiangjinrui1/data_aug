@@ -19,15 +19,15 @@ from PIL import Image
 
 from ultralytics import YOLO
 from segment_anything import sam_model_registry, SamPredictor
-import tqdm
+from tqdm import tqdm  
 import logging
 
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
-                    filename='./log/swap.log',  # 指定日志文件名
-                    filemode='w')  # 'w' 为覆盖模式，'a' 为追加模式
+                    filename='./log/swap.log', 
+                    filemode='w')  
 
 
 save_memory = False
@@ -263,7 +263,7 @@ def extract_and_swap_objects(image_path,save_path):
     image = cv2.imread(image_path)
     if image is None:
         print("Image not found:", image_path)
-        return
+        return False,None
 
     # 推理检测
     results = model_yolo(image)
@@ -290,12 +290,14 @@ def extract_and_swap_objects(image_path,save_path):
                 "center": (cx, cy)
             })
 
-
+    tag = False
+    label_name = None
     for label, objs in objects.items():
         label_name = label_mapping[label]
         if len(objs) < 2 or label_name == "person":
-            continue  # 如果目标数少于 2，跳过此标签
-        # 选择两个目标
+            tag =False
+            label_name = None
+            continue  
         obj1, obj2 = objs[:2]
 
         # 使用 SAM 生成掩码
@@ -327,10 +329,12 @@ def extract_and_swap_objects(image_path,save_path):
         # 保存结果
         result_image = cv2.cvtColor(gen_image2, cv2.COLOR_RGB2BGR)
         cv2.imwrite(save_path, result_image)
-        print(f"Saved swapped image to {save_path}")
-        return  # 只处理第一组，退出函数
+        tag = True
+        logging.info(f"Saved swapped image to {save_path}")
+        return  tag,label_name
 
     print("No matching objects found with at least two instances having the same label.")
+    return tag,label_name
 def batch_process_images(input_dir, output_dir):
     """
     批量处理目录中的图像，提取两个具有相同类别的目标并交换位置。
@@ -356,22 +360,24 @@ def batch_process_images(input_dir, output_dir):
     processed_img_count = 0
 
     for image_path in tqdm(image_files, desc="Processing Images"):
-        try:
-            image_name = os.path.basename(image_path)
-            save_path = os.path.join(output_dir, f"{image_name}")
+        image_name = os.path.basename(image_path)
+        save_path = os.path.join(output_dir, f"{image_name}")
+        if os.path.exists(save_path):
+            logging.info("skip...")
+            processed_img_count += 1
+            continue
 
-            tag,label = extract_and_swap_objects(image_path, save_path)
-            if tag == True:
-                processed_img_count += 1
-                logging.info(f"Processed {image_name}")
-                logging.info(f"Processes Objects: {label}")
-                logging.info(f"saved to {save_path}")
-                logging.info(f"Processed {processed_img_count} images.")
+        tag,label = extract_and_swap_objects(image_path, save_path)
+        if tag == True:
+            processed_img_count += 1
+            logging.info(f"Processed {image_name}")
+            logging.info(f"Processes Objects: {label}")
+            logging.info(f"saved to {save_path}")
+            logging.info(f"Processed {processed_img_count} images.")
 
-            else:
-                logging.warning(f"Skipping {image_path} due to insufficient objects.")
-        except Exception as e:
-            logging.error(f"Error processing {image_path}: {e}")
+        else:
+            logging.warning(f"Skipping {image_path} due to insufficient objects.")
+
 
 if __name__ == '__main__': 
     
@@ -380,8 +386,11 @@ if __name__ == '__main__':
     # sftp://root@connect.cqa1.seetacloud.com:29668/autodl-fs/data/data/data/MORE/img_org/total
     # "D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\"
     image_path ="/autodl-fs/data/data/data/MORE/img_org/total/00058803-fa8b-5587-ad35-0a2852c9fbdd.jpg"
-    print(os.path.exists(image_path))
-    extract_and_swap_objects(image_path,save_path)
+    input_dir = "/autodl-fs/data/data/data/MORE/img_org/train"
+    output_dir = "/autodl-fs/data/anydoor_swap"
+    # print(os.path.exists(image_path))
+    # extract_and_swap_objects(image_path,save_path)
+    batch_process_images(input_dir,output_dir)
     # "D:\研究生阶段\研0\VSCode_workspace\MORE\data\data\MORE\img_org\total\335cb2b3-2053-53f3-abd9-007175ea6404.jpg"
 
     # reference_image_path = './examples/TestDreamBooth/FG/01.png'
